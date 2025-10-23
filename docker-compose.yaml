@@ -15,7 +15,7 @@ services:
     ports:
       - 9000:9000
     volumes:
-      - ./src/www/html:/var/www/html
+      - ./src/php/app:/var/www/html
 
   db:
     image: mysql:latest

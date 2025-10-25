@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/Config.php';
+require_once __DIR__ . '/config.php';
 
 class Database
 {
@@ -10,8 +10,7 @@ class Database
 	private $pass;
 	public $pdo;
 
-	public function connect()
-	{
+	function __construct() {
 		$this->host = DB_HOST;
 		$this->dbname = DB_NAME;
 		$this->user = DB_USER;
@@ -25,7 +24,6 @@ class Database
 			);
 			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			
-			return $this->pdo;
 		} catch (PDOException $e) {
 			die("Database connection failed: " . $e->getMessage());
 		}

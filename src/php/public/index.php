@@ -1,7 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../app/core/router.php';
-require_once __DIR__ . '/../app/controllers/HomeController.php';
+spl_autoload_register(function($class) {
+	$paths = ['../app/core/', '../app/controllers/', '../app/models/'];
+	foreach ($paths as $path) {
+		$file = __DIR__ . "/{$path}{$class}.php";
+		if (file_exists($file)) {
+			require_once $file;
+			return;
+		}
+	}
+});
 
 // --- Define Routes ---
 
@@ -10,10 +18,6 @@ $routes = [
         'controller' => 'HomeController',
         'method' => 'index'
     ],
-    '/home' => [
-        'controller' => 'HomeController',
-        'method' => 'index'
-    ]
 ];
 
 $router = new Routes($routes);

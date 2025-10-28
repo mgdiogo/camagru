@@ -1,7 +1,9 @@
 <?php
 
-class HomeController {
+require_once __DIR__ . '/../core/Controller.php';
+
+class HomeController extends Controller {
 	public function index(): void {
-		require_once __DIR__ . "/../views/pages/home.php";
+		$this->render('/pages/home', ['title' => 'Camagru']);
 	}
 }

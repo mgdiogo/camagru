@@ -4,20 +4,20 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title><?= htmlspecialchars($title) ?></title>
-	<link rel="icon" type="image/x-icon" href="images/icon_camagru.svg">
+	<link rel="icon" type="image/x-icon" href="/images/icon_camagru.svg">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 	<script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="min-h-screen bg-[url(./images/bg_home.jpg)] bg-cover bg-center bg-no-repeat">
-	<div class="flex flex-col lg:flex-row center-items justify-center min-h-screen p-8 lg:p-0">
-		<div class="hidden lg:flex w-1/2 center-items justify-center">
-			<img class="object-cover w-full h-full shadow-lg" src="images/bg_home.jpg" alt="login_img" id="login_img">
+<body class="min-h-screen bg-[url(/images/bg_home.jpg)] bg-cover bg-center bg-no-repeat">
+	<div class="flex flex-col lg:flex-row justify-center min-h-screen p-8 lg:p-0">
+		<div class="hidden lg:flex w-1/2 justify-center">
+			<img class="object-cover w-full h-full shadow-lg" src="/images/bg_home.jpg" alt="login_img" id="login_img">
 		</div>
 		<div class="lg:w-1/2 bg-white rounded-xl lg:rounded-none shadow-lg flex flex-col p-4 md:p-8 lg:p-16">
-			<div class="flex justify-center center-items">
+			<div class="flex justify-center">
 				<img class="max-w-64 md:max-w-xs" src="images/logo_brown.svg">
 			</div>
 			<h1 class="pt-8 pb-8 font-bold font-[Montserrat] text-center text-md md:text-2xl">Your social media where sharing

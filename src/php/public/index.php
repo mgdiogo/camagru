@@ -1,5 +1,7 @@
 <?php
 
+// --- Autoloading for performance ---
+
 spl_autoload_register(function($class) {
 	$paths = ['../app/core/', '../app/controllers/', '../app/models/'];
 	foreach ($paths as $path) {
@@ -18,7 +20,11 @@ $routes = [
         'controller' => 'HomeController',
         'method' => 'index'
     ],
+	'/not_found' => [
+		'controller' => 'ErrorController',
+		'method' => 'index'
+	]
 ];
 
-$router = new Routes($routes);
+$router = new Router($routes);
 $router->handleRequest();

@@ -2,19 +2,23 @@
 
 class Router
 {
-	public function __construct(private array $routes)
-	{
-	}
+	public function __construct(private array $routes) {}
 
-	public function handleRequest(): void
-	{
+	public function handleRequest(): void {
 		$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 		if (isset($this->routes[$uri])) {
 			$route = $this->routes[$uri];
-			$controller = new $route['controller'];
-			$method = $route['method'];
+			$this->dispatch($route['controller'], $route['method']);
+			return;
+		}
 
+		$segments = explode('/', trim($uri, '/'));
+		$controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'ErrorController';
+		$method = $segments[1] ?? 'index';
+
+		if (class_exists($controllerName)) {
+			$controller = new $controllerName();
 			if (method_exists($controller, $method)) {
 				$controller->$method();
 				return;
@@ -24,18 +28,23 @@ class Router
 		$this->handle_404();
 	}
 
+
+	private function dispatch(string $controllerName, string $method): void {
+		if (class_exists($controllerName)) {
+			$controller = new $controllerName();
+			if (method_exists($controller, $method)) {
+				$controller->$method();
+			}
+		} else
+			$this->handle_404();
+	}
+
 	private function handle_404(): void
 	{
 		if (isset($this->routes['/not_found'])) {
 			$route = $this->routes['/not_found'];
-			$controller = new $route['controller'];
-			$method = $route['method'];
-
+			$this->dispatch($route['controller'], $route['method']);
 			http_response_code(404);
-			if (method_exists($controller, $method)) {
-				$controller->$method();
-				return;
-			}
 		}
 	}
 }

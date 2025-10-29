@@ -23,6 +23,10 @@ $routes = [
 	'/not_found' => [
 		'controller' => 'ErrorController',
 		'method' => 'index'
+	],
+	'/user/register' => [
+		'controller' => 'UserController',
+		'method' => 'register'
 	]
 ];
 

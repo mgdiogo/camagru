@@ -1,94 +1,81 @@
 document.addEventListener('DOMContentLoaded', (e) => {
 	const form = document.getElementById('signinForm');
 
-	const username = document.getElementById('username');
-	const password = document.getElementById('password');
+	const fields = {
+		username: {
+			input: document.getElementById('username'),
+			error: document.getElementById('usernameError'),
+			requiredMsg: 'Username is required',
+			marginClass: 'mb-4'
+		},
+		password: {
+			input: document.getElementById('password'),
+			error: document.getElementById('passwordError'),
+			requiredMsg: 'Password is required',
+			marginClass: 'mb-6'
+		}
+	};
 
-	const usernameError = document.getElementById('usernameError');
-	const passwordError = document.getElementById('passwordError');
+	const errorBorder = 'border-[#ed834e]';
 
-
-	[username, password].forEach(input => {
-		input.classList.remove('border-red-600');
-	});
-
-	[usernameError, passwordError].forEach(err => {
-		err.classList.add('hidden');
-	});
-
-	function validateUsername() {
-		if (!username.value.trim()) {
-			username.classList.add('border-red-600');
-			username.classList.remove('mb-4');
-			usernameError.textContent = 'Username is required';
-			usernameError.classList.remove('hidden');
-			return false;
-		} else {
-            username.classList.remove('border-red-600');
-			username.classList.add('mb-4');
-            usernameError.classList.add('hidden');
-            return true;
-        }
+	function showError(field, message) {
+		field.input.classList.add(errorBorder);
+		field.input.classList.remove(field.marginClass);
+		field.error.textContent = message;
+		field.error.classList.remove('hidden');
 	}
 
-	username.addEventListener('blur', validateUsername);
-	username.addEventListener('input', () => {
-		validateUsername();
-	});
+	function hideError(field) {
+		field.input.classList.remove(errorBorder);
+		field.input.classList.add(field.marginClass);
+		field.error.classList.add('hidden');
+	}
 
-	function validatePassword() {
-		if (!password.value.trim()) {
-			password.classList.add('border-red-600');
-			password.classList.remove('mb-6');
-			passwordError.textContent = 'Password is required';
-			passwordError.classList.remove('hidden');
+	function validateField(field) {
+		if (!field.input.value.trim()) {
+			showError(field, field.requiredMsg);
 			return false;
 		} else {
-			password.classList.remove('border-red-600');
-			password.classList.add('mb-6');
-			passwordError.classList.add('hidden');
+			hideError(field);
 			return true;
 		}
 	}
-	
-	password.addEventListener('blur', validatePassword);
-	password.addEventListener('input', () => {
-		validatePassword();
-	});
 
+	Object.values(fields).forEach(field => {
+		field.input.addEventListener('blur', () => validateField(field));
+		field.input.addEventListener('input', () => validateField(field));
+	});
 
 	form.addEventListener('submit', async (e) => {
 		e.preventDefault();
 
-		const userNotEmpty = validateUsername();
-		const passNotEmpty = validatePassword();
+		let allValid = true;
+		Object.values(fields).forEach(field => {
+			if (!validateField(field)) allValid = false;
+		});
 
-		if (userNotEmpty && passNotEmpty) {
-			try {
-				const formData = new FormData(form);
-	
-				const response = await fetch('/user/login', {
-					method: 'POST',
-					body: formData
-				})
-	
-				const result = await response.json();
-	
-				if (result.success) {
-					if (result.redirect) {
-						setTimeout(() => {
-							window.location.href = result.redirect;
-						})
-					}
-				} else {
-					username.classList.add('border-red-600');
-					username.classList.remove('mb-4');
-					usernameError.textContent = 'Invalid credentials';
-					usernameError.classList.remove('hidden');
+		if (!allValid) return;
+
+		try {
+			const formData = new FormData(form);
+
+			const response = await fetch('/user/login', {
+				method: 'POST',
+				body: formData
+			})
+
+			const result = await response.json();
+
+			if (result.success) {
+				if (result.redirect) {
+					setTimeout(() => {
+						window.location.href = result.redirect;
+					})
 				}
-			} catch (err) {
-				console.error('Error: ', err);
-			}
+			} else
+				showError(fields.username, 'Invalid credentials');
+		} catch (err) {
+			console.error('Error: ', err);
 		}
 	})
 })

@@ -18,20 +18,22 @@
 				<input type="hidden" name="type" value="login">
 				<div class="w-full md:w-96 flex flex-col justify-center">
 					<label for="username"
-						class="block mt-4 mb-2 text-gray-700 font-bold font-[Montserrat]">Username:</label>
+						class="block mt-4 mb-2 text-[#3d3a2] font-bold font-[Montserrat]">Username:</label>
 					<input type="text" id="username" name="username" placeholder="Enter your username"
-						class="block mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-500">
-					<p class="text-red-600 text-sm hidden mt-1 mb-3" id="usernameError">Username is required</p>
+						class="block mb-4 px-4 py-2 border border-[#ebe1c5] rounded-md focus:outline-none focus:border-[#4f9e91] transition-colors duration-200">
+					<p class="text-[#ed834e] text-sm hidden mt-1 mb-3" id="usernameError">Username is required</p>
 					<label for="password"
-						class="block mt-4 mb-2 text-left text-gray-700 font-bold font-[Montserrat]">Password:</label>
+						class="block mt-4 mb-2 text-left text-[#3d3a2c] font-bold font-[Montserrat]">Password:</label>
 					<input type="password" id="password" name="password" placeholder="Enter your password"
-						class="block mb-6 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-500 required">
-					<p class="text-red-600 text-sm hidden mt-1 mb-3" id="passwordError">Password is required</p>
+						class="block mb-6 px-4 py-2 border border-[#ebe1c5] rounded-md focus:outline-none focus:border-[#4f9e91] transition-colors duration-200 required">
+					<p class="text-[#ed834e] text-sm hidden mt-1 mb-3" id="passwordError">Password is required</p>
 				</div>
 				<button type="submit" name="login_btn"
-					class="w-1/2 md:w-1/3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300 font-bold font-[Montserrat] rounded-lg text-md px-5 py-2.5 mt-2 dark:bg-blue-600">Login</button>
-				<span class="py-4 text-center font-[Montserrat]">Don't have an account? <a href="/signup"
-						class="cursor-pointer hover:underline text-blue-600 font-[Montserrat] font-semibold">Sign up</a></span>
+					class="w-1/2 md:w-1/3 text-white bg-[#4f9e91] hover:bg-[#3d3a2c] focus:ring-2 focus:ring-[#ebcd6e] font-bold font-[Montserrat] rounded-lg text-md px-5 py-2.5 mt-2 transition-colors duration-200">Login
+				</button>
+				<span class="py-4 text-center font-[Montserrat]">Don't have an account? 
+					<a href="/signup" class="cursor-pointer text-[#4f9e91] hover:text-[#3d3a2c] hover:underline font-semibold transition-colors duration-200">Sign up</a>
+				</span>
 			</form>
 		</div>
 	</div>

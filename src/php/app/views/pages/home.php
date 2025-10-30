@@ -10,7 +10,7 @@
 		<div class="hidden lg:flex w-1/2 justify-center">
 			<img class="object-cover w-full h-full shadow-lg" src="/images/bg_home.jpg" alt="login_img" id="login_img">
 		</div>
-		<div class="lg:w-1/2 bg-white rounded-xl lg:rounded-none shadow-lg flex flex-col p-4 md:p-8 lg:p-16">
+		<div class="lg:w-1/2 bg-white rounded-xl lg:rounded-none justify-center shadow-lg flex flex-col p-8 lg:p-16">
 			<div class="flex justify-center">
 				<img class="max-w-64 md:max-w-xs" src="images/logo_brown.svg">
 			</div>
@@ -18,12 +18,7 @@
 				sharing
 				photos has never been more fun!
 			</h1>
-			<div class="flex justify-center">
-				<div id="errorBox"
-					class="w-1/2 md:w-1/3 thidden opacity-0 transition-opacity duration-300 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-center mx-auto">
-				</div>
-			</div>
-			<form method="POST" action="user/register" class="flex flex-col items-center" id="signupForm">
+			<form method="POST" class="flex flex-col items-center" id="signupForm">
 				<input type="hidden" name="type" value="register">
 				<div class="w-full md:w-96 flex flex-col justify-center">
 					<label for="username"

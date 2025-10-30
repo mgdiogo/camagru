@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		validateConfirmPassword();
 	});
 
-	form.addEventListener('submit', (e) => {
+	form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const isUsernameValid = validateUsername();
@@ -151,7 +151,36 @@ document.addEventListener('DOMContentLoaded', (e) => {
         const isPasswordValid = validatePassword();
         const isConfirmPasswordValid = validateConfirmPassword();
 
-		if (isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid)
-			form.submit();
+		if (isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+			try {
+				const formData = new FormData(form);
+	
+				const response = await fetch('/user/register', {
+					method: 'POST',
+					body: formData
+				})
+	
+				const result = await response.json();
+				
+				if (result.success) {
+					if (result.redirect) {
+						setTimeout(() => {
+							window.location.href = result.redirect;
+						})
+					}
+				} else {
+					username.classList.add('border-red-600');
+					username.classList.remove('mb-4');
+					usernameError.textContent = 'Email or username already taken';
+					usernameError.classList.remove('hidden');
+					email.classList.add('border-red-600');
+					email.classList.remove('mb-4');
+					emailError.textContent = 'Email or username already taken';
+					emailError.classList.remove('hidden');
+				}
+			} catch (err) {
+				console.error('Error: ', err);
+			}
+		}
 	})
 })

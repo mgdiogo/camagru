@@ -1,8 +1,8 @@
 <?php
 
-// --- Autoloading for performance ---
+// Autoloading for performance
 
-spl_autoload_register(function($class) {
+spl_autoload_register(function ($class) {
 	$paths = ['../app/core/', '../app/controllers/', '../app/models/'];
 	foreach ($paths as $path) {
 		$file = __DIR__ . "/{$path}{$class}.php";
@@ -13,22 +13,43 @@ spl_autoload_register(function($class) {
 	}
 });
 
-// --- Define Routes ---
+// Define Routes
 
 $routes = [
-    '/' => [
-        'controller' => 'HomeController',
-        'method' => 'index'
-    ],
+	'/' => [
+		'controller' => 'HomeController',
+		'method' => 'signup'
+	],
+	'/signup'=> [
+		'controller' => 'HomeController',
+		'method' => 'signup'
+	],
+	'/login'=> [
+		'controller' => 'HomeController',
+		'method' => 'login'
+	],
 	'/not_found' => [
 		'controller' => 'ErrorController',
-		'method' => 'index'
+		'method' => 'not_found'
 	],
 	'/user/register' => [
 		'controller' => 'UserController',
 		'method' => 'register'
+	],
+	'/user/login' => [
+		'controller' => 'UserController',
+		'method' => 'login'
 	]
 ];
 
-$router = new Router($routes);
-$router->handleRequest();
+try {
+	$router = new Router($routes);
+	$router->handleRequest();
+} catch (Throwable $e) {
+	error_log($e);
+	http_response_code(500);
+	require_once '../app/controllers/ErrorController.php';
+	$controller = new ErrorController();
+	$controller->server_error();
+	exit;
+}

@@ -11,8 +11,8 @@
 			<div class="flex flex-col md:flex-row justify-center items-center w-full md:min-h-screen max-w-sm md:max-w-2xl">
 				<img class="w-1/2 md:w-full max-w-sm" src="/images/404.png">
 				<div class="flex flex-col w-full">
-					<span class="text-center md:text-left font-[Montserrat] font-bold text-3xl">Page not found</span>
-					<span class="pt-4 text-center md:text-left font-[Montserrat] text-xl">We couldn't find the page you are looking for.</span>
+					<span class="text-center md:text-left font-[Montserrat] font-bold text-3xl">Internal Server Error</span>
+					<span class="pt-4 text-center md:text-left font-[Montserrat] text-xl">Someone tripped over the wires, we will be back shortly!</span>
 					<a href="/" class="pt-4 text-center md:text-left font-[Montserrat] text-xl">Go to <span class="cursor-pointer hover:underline text-blue-600 font-semibold">homepage.</span></a>
 				</div>
 			</div>

@@ -42,9 +42,9 @@ class Router
 	private function handle_404(): void
 	{
 		if (isset($this->routes['/not_found'])) {
+			http_response_code(404);
 			$route = $this->routes['/not_found'];
 			$this->dispatch($route['controller'], $route['method']);
-			http_response_code(404);
 		}
 	}
 }

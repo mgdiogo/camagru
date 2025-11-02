@@ -20,6 +20,18 @@ class UserModel extends Model {
 			return false;
 	}
 
+	public function getUserById($id) {
+		$this->db->query('SELECT * FROM users WHERE id = :id');
+		$this->db->bind('id', $id);
+
+		$row = $this->db->fetch();
+
+		if ($this->db->rowCount() > 0) {
+			return $row;
+		} else 
+			return false;
+	}
+
 	public function register(array $data) {
 		try {
 			$this->db->query('INSERT INTO users (username, email, verified, password, created_at) VALUES (:username, :email, :verified, :password, :created_at)');

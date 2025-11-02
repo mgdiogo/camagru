@@ -1,16 +1,17 @@
 <?php
-	session_start();
+	include_once '../app/controllers/AuthController.php';
+	AuthController::isLoggedIn();
 	include_once '../app/views/templates/header.php'
 ?>
 
 <!DOCTYPE html>
 
 <body class="min-h-screen bg-[url(/images/bg_home.jpg)] bg-cover bg-center bg-no-repeat">
-	<div class="flex flex-col lg:flex-row justify-center min-h-screen p-8 lg:p-0">
+	<main class="flex flex-col lg:flex-row justify-center min-h-screen p-8 lg:p-0">
 		<div class="hidden lg:flex w-1/2 justify-center">
 			<img class="object-cover w-full h-full shadow-lg" src="/images/bg_home.jpg" alt="login_img" id="login_img">
 		</div>
-		<div class="lg:w-1/2 bg-white rounded-xl lg:rounded-none justify-center shadow-lg flex flex-col p-4 md:p-8 lg:p-16">
+		<div class="lg:w-1/2 bg-[#fdf8ef] rounded-xl lg:rounded-none justify-center shadow-lg flex flex-col p-4 md:p-8 lg:p-16">
 			<div class="flex justify-center p-8">
 				<img class="max-w-64 md:max-w-xs" src="images/logo_brown.svg">
 			</div>
@@ -36,6 +37,6 @@
 				</span>
 			</form>
 		</div>
-	</div>
+	</main>
 	<script src="/js/login.js"></script>
 </body>

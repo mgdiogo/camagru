@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../app/core/config.php';
+
 // Autoloading for performance
 
 spl_autoload_register(function ($class) {
@@ -12,6 +14,8 @@ spl_autoload_register(function ($class) {
 		}
 	}
 });
+
+validateSession();
 
 // Define Routes
 
@@ -36,9 +40,13 @@ $routes = [
 		'controller' => 'UserController',
 		'method' => 'register'
 	],
-	'/user/login' => [
-		'controller' => 'UserController',
+	'/auth/login' => [
+		'controller' => 'AuthController',
 		'method' => 'login'
+	],
+	'/logout' => [ 
+		'controller' => 'AuthController',
+		'method' => 'logout'
 	]
 ];
 
@@ -48,7 +56,6 @@ try {
 } catch (Throwable $e) {
 	error_log($e);
 	http_response_code(500);
-	require_once '../app/controllers/ErrorController.php';
 	$controller = new ErrorController();
 	$controller->server_error();
 	exit;

@@ -115,49 +115,4 @@ class UserController extends Controller
 			]);
 		}
 	}
-
-	public function login() {
-		header('Content-Type: application/json');
-
-		$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-		$data = [
-			'username' => trim($_POST['username'] ?? ''),
-			'password' => trim($_POST['password'] ?? '')
-		];
-
-		if (empty($data['username']) || empty($data['password'])) {
-			http_response_code(400);
-			echo json_encode([
-				'success' => false,
-				'message' => 'Missing fields',
-			]);
-			return;
-		}
-
-		$user = $this->userModel->getUserByEmailOrUsername($data['username'], $data['username']);
-
-		if ($user) {
-			if (password_verify($data['password'], $user->password)) {
-				http_response_code(200);
-				echo json_encode([
-					'success' => true,
-					'message' => 'Login successful',
-					'redirect' => '/feed'
-				]);
-			} else {
-				http_response_code(400);
-				echo json_encode([
-					'success' => false,
-					'message' => 'Invalid credentials',
-				]);
-			}
-		} else {
-			http_response_code(400);
-			echo json_encode([
-				'success' => false,
-				'message' => 'Invalid credentials',
-			]);
-		}
-	}
 }

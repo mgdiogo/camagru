@@ -2,6 +2,6 @@
 
 class FeedController extends Controller {
 	public function index() {
-		$this->render('/pages/feed', ['title' => 'Feed']);
+		$this->render('/pages/feed', ['title' => 'Camagru']);
 	}
 }

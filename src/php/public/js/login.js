@@ -59,9 +59,10 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		try {
 			const formData = new FormData(form);
 
-			const response = await fetch('/user/login', {
+			const response = await fetch('/auth/login', {
 				method: 'POST',
-				body: formData
+				body: formData,
+				credentials: 'include'
 			})
 
 			const result = await response.json();

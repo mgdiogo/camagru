@@ -32,6 +32,15 @@ class AuthController extends Controller {
 
 		if ($user) {
 			if (password_verify($data['password'], $user->password)) {
+				if (!$user->verified) {
+					http_response_code(400);
+					echo json_encode([
+					'success' => false,
+					'verified' => false,
+					'message' => 'Verification has not been completed, check your email'
+					]);
+					return;
+				}
 				session_regenerate_id(true);
 				$_SESSION['user_id'] = $user->id;
 				http_response_code(200);
@@ -76,7 +85,7 @@ class AuthController extends Controller {
 		session_unset();
 		session_destroy();
 	
-		header('Location: /');
+		header('Location: /login');
 		exit;
 	}
 
@@ -89,7 +98,7 @@ class AuthController extends Controller {
 		$userId = $_SESSION['user_id'] ?? null;
 		if (!$userId || !is_numeric($userId)) {
 			session_destroy();
-			AuthController::redirect('/');
+			AuthController::redirect('/login');
 		}
 	}
 	

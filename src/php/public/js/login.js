@@ -73,8 +73,12 @@ document.addEventListener('DOMContentLoaded', (e) => {
 						window.location.href = result.redirect;
 					})
 				}
-			} else
-				showError(fields.username, 'Invalid credentials');
+				return;
+			} else if (!result.verified) {
+				showError(fields.username, result.message);
+				return;
+			}
+			showError(fields.username, result.message);
 		} catch (err) {
 			console.error('Error: ', err);
 		}

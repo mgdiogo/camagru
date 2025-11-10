@@ -40,6 +40,10 @@ $routes = [
 		'controller' => 'UserController',
 		'method' => 'register'
 	],
+	'/verify' => [
+		'controller' => 'VerificationController',
+		'method' => 'index'
+	],
 	'/auth/login' => [
 		'controller' => 'AuthController',
 		'method' => 'login'

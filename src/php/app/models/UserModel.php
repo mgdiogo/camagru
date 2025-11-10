@@ -32,6 +32,24 @@ class UserModel extends Model {
 			return false;
 	}
 
+	public function getUserByToken($token) {
+		$this->db->query('SELECT id, verified, verification_token FROM users WHERE verification_token = :verification_token');
+		$this->db->bind('verification_token', $token);
+
+		$row = $this->db->fetch();
+
+		if ($this->db->rowCount() > 0) {
+			return $row;
+		} else 
+			return false;
+	}
+
+	public function setVerified($id) {
+		$this->db->query('UPDATE users SET verified = 1 WHERE id = :id');
+		$this->db->bind('id', $id);
+		$this->db->execute();
+	}
+
 	public function register(array $data) {
 		try {
 			$verificationToken = bin2hex(random_bytes(32));

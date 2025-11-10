@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../core/Controller.php';
+require_once __DIR__ . '/../core/mail.php';
 
 class UserController extends Controller
 {
@@ -85,7 +86,9 @@ class UserController extends Controller
 			return;
 		}
 
-		if ($this->userModel->getUserByEmailOrUsername($data['email'], $data['username'])) {
+		$user = $this->userModel->getUserByEmailOrUsername($data['email'], $data['username']);
+
+		if ($user) {
 			http_response_code(409);
 			echo json_encode([
 				'success' => false,
@@ -99,7 +102,10 @@ class UserController extends Controller
 		// Hashing password, using PASSWORD_DEFAULT automatically uses the most recent hashing algorithm so it's recommended
 		$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-		if ($this->userModel->register($data)) {
+		$verificationToken = $this->userModel->register($data);
+
+		if ($verificationToken) {
+			sendEmail($data['username'], $data['email'], $verificationToken);
 			http_response_code(201);
 			echo json_encode([
 				'success' => true,

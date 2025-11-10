@@ -34,14 +34,18 @@ class UserModel extends Model {
 
 	public function register(array $data) {
 		try {
-			$this->db->query('INSERT INTO users (username, email, verified, password, created_at) VALUES (:username, :email, :verified, :password, :created_at)');
+			$verificationToken = bin2hex(random_bytes(32));
+
+			$this->db->query('INSERT INTO users (username, email, verified, verification_token, password, created_at) VALUES (:username, :email, :verified, :verification_token, :password, :created_at)');
 			$this->db->bind('username', $data['username']);
 			$this->db->bind('email', $data['email']);
 			$this->db->bind('verified', 0);
+			$this->db->bind('verification_token', $verificationToken);
 			$this->db->bind('password', $data['password']);
 			$this->db->bind('created_at', date('Y-m-d H:i:s'));
-	
-			return $this->db->execute();
+			$this->db->execute();
+
+			return $verificationToken;
 		} catch (PDOException $e) {
 			error_log("Registration error: " . $e->getMessage());
 			return false;

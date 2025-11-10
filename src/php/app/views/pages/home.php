@@ -15,7 +15,7 @@
 			<div class="flex justify-center">
 				<img class="max-w-64 md:max-w-xs" src="images/logo_brown.svg">
 			</div>
-			<h1 class="pt-8 pb-8 text-[#3d3a2c] font-semibold font-[Montserrat] text-center font-size-[1.2rem] md:text-xl">Your social media where
+			<h1 class="pt-8 pb-8 text-[#3d3a2c] font-semibold font-[Montserrat] text-center text-[1.2rem] md:text-xl">Your social media where
 				sharing
 				photos has never been more fun!
 			</h1>

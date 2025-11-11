@@ -4,8 +4,6 @@
 	include_once '../app/views/templates/header.php'
 ?>
 
-<!DOCTYPE html>
-
 <body class="min-h-screen bg-[url(/images/bg_home.jpg)] bg-cover bg-center bg-no-repeat">
 	<main class="flex flex-col lg:flex-row justify-center min-h-screen p-8 lg:p-0">
 		<div class="hidden lg:flex w-1/2 justify-center">

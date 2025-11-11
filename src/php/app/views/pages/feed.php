@@ -1,10 +1,8 @@
 <?php
-include_once '../app/controllers/AuthController.php';
-AuthController::validateUser();
-include_once '../app/views/templates/header.php';
+	include_once '../app/controllers/AuthController.php';
+	AuthController::validateUser();
+	include_once '../app/views/templates/header.php';
 ?>
-
-<!DOCTYPE html>
 
 <body class="min-h-screen flex flex-col">
 	<header>

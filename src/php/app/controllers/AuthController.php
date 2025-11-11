@@ -1,13 +1,16 @@
 <?php
 
 require_once __DIR__ . '/../core/Controller.php';
+require_once __DIR__ . '/../core/mail.php';
 
 class AuthController extends Controller {
 
 	private $userModel;
+	private $verificationModel;
 
 	public function __construct() {
 		$this->userModel = new UserModel;
+		$this->verificationModel = new VerificationModel;
 	}
 	public function login() {
 		header('Content-Type: application/json');
@@ -31,13 +34,24 @@ class AuthController extends Controller {
 		$user = $this->userModel->getUserByEmailOrUsername($data['username'], $data['username']);
 
 		if ($user) {
+			$verifiedUser = $this->verificationModel->getVerified($user->id);
 			if (password_verify($data['password'], $user->password)) {
-				if (!$user->verified) {
-					http_response_code(400);
+				if (!$verifiedUser->verified && (time() - strtotime($verifiedUser->verification_sent) < 60 * 5)) {
+					http_response_code(403);
 					echo json_encode([
 					'success' => false,
 					'verified' => false,
-					'message' => 'Verification has not been completed, check your email'
+					'message' => 'Email is not verified, check your inbox'
+					]);
+					return;
+				} else if (!$verifiedUser->verified && (time() - strtotime($verifiedUser->verification_sent) > 60 * 5)) {
+					$verificationToken = $this->verificationModel->generateVerificationToken($user->id);
+					sendEmail($user->username, $user->email , $verificationToken);
+					http_response_code(403);
+					echo json_encode([
+					'success' => false,
+					'verified' => false,
+					'message' => 'Previous verification link expired, a new one has been sent to your email'
 					]);
 					return;
 				}
@@ -50,14 +64,14 @@ class AuthController extends Controller {
 					'redirect' => '/feed'
 				]);
 			} else {
-				http_response_code(400);
+				http_response_code(401);
 				echo json_encode([
 					'success' => false,
 					'message' => 'Invalid credentials',
 				]);
 			}
 		} else {
-			http_response_code(400);
+			http_response_code(401);
 			echo json_encode([
 				'success' => false,
 				'message' => 'Invalid credentials',

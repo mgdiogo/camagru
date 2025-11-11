@@ -10,7 +10,7 @@
 				<img class="w-1/2 md:w-full max-w-sm" src="/images/404.png">
 				<div class="flex flex-col w-full">
 					<span class="text-center md:text-left font-[Montserrat] font-bold text-3xl">Invalid or expired link</span>
-					<span class="pt-4 text-center md:text-left font-[Montserrat] text-xl">No verification needed has been found.</span>
+					<span class="pt-4 text-center md:text-left font-[Montserrat] text-xl">Invalid account verification request.</span>
 					<a href="/" class="pt-4 text-center md:text-left font-[Montserrat] text-xl">Go to <span class="cursor-pointer hover:underline text-blue-600 font-semibold">homepage.</span></a>
 				</div>
 			</div>

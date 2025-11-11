@@ -7,9 +7,11 @@ class UserController extends Controller
 {
 
 	private $userModel;
+	private $verificationModel;
 
 	public function __construct() {
 		$this->userModel = new UserModel;
+		$this->verificationModel = new VerificationModel;
 	}
 
 	public function register(): void {
@@ -102,9 +104,8 @@ class UserController extends Controller
 		// Hashing password, using PASSWORD_DEFAULT automatically uses the most recent hashing algorithm so it's recommended
 		$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-		$verificationToken = $this->userModel->register($data);
-
-		if ($verificationToken) {
+		if ($id = $this->userModel->register($data)) {
+			$verificationToken = $this->verificationModel->generateVerificationToken($id); 
 			sendEmail($data['username'], $data['email'], $verificationToken);
 			http_response_code(201);
 			echo json_encode([

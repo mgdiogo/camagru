@@ -1,14 +1,15 @@
 <?php
 
 require_once __DIR__ . '/../core/Controller.php';
-require_once __DIR__ . '/../models/UserModel.php';
 
 class VerificationController extends Controller {
 
 	private $userModel;
+	private $verificationModel;
 
 	public function __construct() { 
-		$this->userModel = new UserModel();
+		$this->userModel = new UserModel;
+		$this->verificationModel = new VerificationModel;
 	}
 
 	public function index() {
@@ -23,7 +24,7 @@ class VerificationController extends Controller {
 			$this->render('/pages/user_already_verified', ['title' => 'Camagru']);
 			return;
 		}
-		$this->userModel->setVerified($user->id);
+		$this->verificationModel->setVerified($user->id);
 		$this->render('/pages/successful_verification', ['title' => 'Camagru']);
 	}
 }

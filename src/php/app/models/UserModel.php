@@ -44,26 +44,18 @@ class UserModel extends Model {
 			return false;
 	}
 
-	public function setVerified($id) {
-		$this->db->query('UPDATE users SET verified = 1 WHERE id = :id');
-		$this->db->bind('id', $id);
-		$this->db->execute();
-	}
-
 	public function register(array $data) {
 		try {
-			$verificationToken = bin2hex(random_bytes(32));
-
-			$this->db->query('INSERT INTO users (username, email, verified, verification_token, password, created_at) VALUES (:username, :email, :verified, :verification_token, :password, :created_at)');
+			$this->db->query('INSERT INTO users (username, email, verified, password, created_at) VALUES (:username, :email, :verified, :password, :created_at)');
 			$this->db->bind('username', $data['username']);
 			$this->db->bind('email', $data['email']);
 			$this->db->bind('verified', 0);
-			$this->db->bind('verification_token', $verificationToken);
 			$this->db->bind('password', $data['password']);
 			$this->db->bind('created_at', date('Y-m-d H:i:s'));
-			$this->db->execute();
 
-			return $verificationToken;
+			if ($this->db->execute())
+				return $this->db->lastInsertId();
+			return false;
 		} catch (PDOException $e) {
 			error_log("Registration error: " . $e->getMessage());
 			return false;

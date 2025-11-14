@@ -46,7 +46,7 @@ class AuthController extends Controller {
 					return;
 				} else if (!$verifiedUser->verified && (time() - strtotime($verifiedUser->verification_sent) > 60 * 5)) {
 					$verificationToken = $this->verificationModel->generateVerificationToken($user->id);
-					sendEmail($user->username, $user->email , $verificationToken);
+					sendVerification($user->username, $user->email , $verificationToken);
 					http_response_code(403);
 					echo json_encode([
 					'success' => false,

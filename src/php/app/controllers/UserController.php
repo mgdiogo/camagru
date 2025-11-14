@@ -106,7 +106,7 @@ class UserController extends Controller
 
 		if ($id = $this->userModel->register($data)) {
 			$verificationToken = $this->verificationModel->generateVerificationToken($id); 
-			sendEmail($data['username'], $data['email'], $verificationToken);
+			sendVerification($data['username'], $data['email'], $verificationToken);
 			http_response_code(201);
 			echo json_encode([
 				'success' => true,

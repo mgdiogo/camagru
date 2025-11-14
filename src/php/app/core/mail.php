@@ -1,6 +1,6 @@
 <?php
 
-function sendEmail($username, $recipient, $verificationLink): void { 
+function sendVerification($username, $recipient, $verificationLink): void { 
 	$to = $recipient;
 	$subject = "Camagru - Verify your email";
 	$message = '<!DOCTYPE html>

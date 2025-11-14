@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <?php
-	include_once '../app/views/templates/header.php'
+	include_once '../app/views/templates/head.php'
 ?>
 
 <body class="md:bg-[url(/images/bg_home.jpg)] bg-cover bg-center bg-no-repeat min-h-screen">

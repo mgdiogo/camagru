@@ -1,7 +1,7 @@
 <?php
 	include_once '../app/controllers/AuthController.php';
 	AuthController::isLoggedIn();
-	include_once '../app/views/templates/header.php'
+	include_once '../app/views/templates/head.php'
 ?>
 
 <body class="min-h-screen bg-[url(/images/bg_home.jpg)] bg-cover bg-center bg-no-repeat">

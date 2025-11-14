@@ -7,7 +7,8 @@ class ProfileController extends Controller {
 
 	public function __construct() {
 		$this->userModel = new UserModel();
-	 }
+	}
+	
 	public function profile() {
 		$user = $this->userModel->getUserById($_SESSION['user_id']);
 

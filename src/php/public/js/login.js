@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 			}
 			showError(fields.username, result.message);
 		} catch (err) {
-			console.error('Error: ', err);
+			console.error('Error logging in: ', err);
 		}
 	})
 })

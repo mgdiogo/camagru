@@ -8,12 +8,11 @@ class ProfileController extends Controller {
 	public function __construct() {
 		$this->userModel = new UserModel();
 	}
-	
+
 	public function profile() {
 		$user = $this->userModel->getUserById($_SESSION['user_id']);
 
 		if (empty($user)) {
-			http_response_code(403);
 			header('Location: /login');
 			return;
 		}

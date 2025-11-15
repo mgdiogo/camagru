@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', (e) => {
 			error: document.getElementById('usernameError'),
 			marginClass: 'mb-4',
 			validators: [
-				{ check: val => !!val, msg: 'Username is required'},
-				{ check: val => val.length >= 4 && val.length <= 25, msg: 'Username must have between 4 and 25 characters'},
-				{ check: val => /[a-zA-Z]/.test(val), msg: 'Username must contain atleast one letter'}
+				{ check: val => !!val, msg: 'Username is required' },
+				{ check: val => val.length >= 4 && val.length <= 25, msg: 'Username must have between 4 and 25 characters' },
+				{ check: val => /[a-zA-Z]/.test(val), msg: 'Username must contain atleast one letter' }
 			]
 		},
 		email: {
@@ -104,12 +104,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
 			} else {
 				username.classList.add('border-red-600');
 				username.classList.remove('mb-4');
-				usernameError.textContent = 'Email or username already taken';
+				usernameError.textContent = result.message;
 				usernameError.classList.remove('hidden');
-				email.classList.add('border-red-600');
-				email.classList.remove('mb-4');
-				emailError.textContent = 'Email or username already taken';
-				emailError.classList.remove('hidden');
 			}
 		} catch (err) {
 			console.error('Error: ', err);

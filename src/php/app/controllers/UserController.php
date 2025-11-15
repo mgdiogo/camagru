@@ -15,9 +15,14 @@ class UserController extends Controller
 	}
 
 	public function register(): void {
-
 		// Set content to JSON for API Responses
 		header('Content-Type: application/json');
+
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			http_response_code(405);
+			echo json_encode(['error' => '405: Method not allowed']);
+			exit;
+		}
 
 		// Sanitize data sent from POST
 		$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -121,5 +126,80 @@ class UserController extends Controller
 				'redirect' => '/server_error'
 			]);
 		}
+	}
+
+	public function editProfile() {
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			http_response_code(405);
+			echo json_encode(['error' => '405: Method not allowed']);
+			exit;
+		}
+
+		$user = $this->userModel->getUserById($_SESSION['user_id']);
+
+		if (!$user) {
+			header('Location: /login');
+			exit;
+		}
+
+		$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+		$data = [
+			'username' => isset($_POST['username']) && $_POST['username'] !== '' ? trim($_POST['username']) : null,
+    		'email' => isset($_POST['email']) && $_POST['email'] !== '' ? trim($_POST['email']) : null
+		];
+
+		$existingUser = $this->userModel->getUserByEmailOrUsername($data['email'], $data['username']);
+
+		if ($existingUser) {
+			http_response_code(409);
+			echo json_encode([
+				'success' => false,
+				'message' => 'Username or email already taken',
+				'field' => 'username'
+			]);
+			return;
+	}
+
+		if ($data['username'] !== null) {
+			if (strlen($data['username']) < 4 || strlen($data['username']) > 25) {
+				http_response_code(400);
+				echo json_encode([
+					'success' => false,
+					'message' => 'Username must have between 4 and 25 characters',
+					'field' => 'username'
+				]);
+				return;
+			}
+	
+			if (!preg_match('/[a-zA-Z]/', $data['username'])) {
+				http_response_code(400);
+				echo json_encode([
+					'success' => false,
+					'message' => 'Username must contain atleast one letter',
+					'field' => 'username'
+				]);
+				return;
+			}
+		}
+
+		if ($data['email'] !== null) {
+			if (!preg_match('/^[^\s@]+@[^\s@]+\.[^\s@]+$/', $data['email'])) {
+				http_response_code(400);
+				echo json_encode([
+					'success' => false,
+					'message' => 'Please enter a valid email address',
+					'field' => 'email'
+				]);
+				return;
+			}
+		}
+
+		$this->userModel->updateUserInfo($data, $user->id);
+		echo json_encode([
+			'success' => true,
+			'message'=> 'Info updated successfully',
+			'redirect'=> '/profile'
+		]);
 	}
 }

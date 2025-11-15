@@ -61,4 +61,21 @@ class UserModel extends Model {
 			return false;
 		}
 	}
+
+	public function updateUserInfo(array $data, $id) {
+		try {
+			$this->db->query('UPDATE users SET 
+				username = COALESCE(:username, username),
+				email = COALESCE(:email, email)
+			WHERE id = :id');
+			
+			$this->db->bind('username', $data['username']);
+			$this->db->bind('email', $data['email']);
+			$this->db->bind('id', $id);
+			$this->db->execute();
+		} catch (PDOException $e) {
+			error_log("Error updating user: " . $e->getMessage());
+			return false;
+		}
+	}
 }

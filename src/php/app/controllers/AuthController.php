@@ -15,6 +15,12 @@ class AuthController extends Controller {
 	public function login() {
 		header('Content-Type: application/json');
 
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			http_response_code(405);
+			echo json_encode(['error' => '405: Method not allowed']);
+			exit;
+		}
+
 		$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 		$data = [

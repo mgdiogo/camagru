@@ -11,9 +11,28 @@
 			<div class="flex flex-row justify-between py-5 px-6">
 				<p class="font-[Montserrat] font-bold text-2xl">My Profile</p>
 				<div class="flex flex-row gap-2.5">
-					<button id="edit_btn" class="flex font-medium font-[Montserrat] text-sm justify-center items-center h-8 md:py-2 md:px-2.5 rounded-md gap-2.5 hover:bg-[#E9E9E9]"><img class="w-4 h-4" src="/images/edit.svg">Edit Profile</button>
-					<button id="password_btn" class="flex font-medium font-[Montserrat] text-sm justify-center items-center h-8 md:py-2 md:px-2.5 rounded-md gap-2.5 hover:bg-[#E9E9E9]"><img class="w-4 h-4" src="/images/lock.svg">Change Password</button>
-					<button id="delete_btn" class="flex font-medium font-[Montserrat] text-sm text-[#AA1616] justify-center items-center h-8 md:py-2 md:px-2.5 rounded-md gap-2.5 bg-[#FFEAEA] hover:bg-[#F3DCDC]"><img class="w-4 h-4" src="/images/delete.svg">Delete Account</button>
+					<?php
+					$props = [
+						'id' => 'edit_btn',
+						'icon' => '/images/edit.svg',
+						'text' => 'Edit Profile'
+					];
+					include '../app/views/components/secondaryBtn.php';
+
+					$props = [
+						'id' => 'password_btn',
+						'icon' => '/images/lock.svg',
+						'text' => 'Change Password'
+					];
+					include '../app/views/components/secondaryBtn.php';
+
+					$props = [
+						'id' => 'delete_btn',
+						'icon'=> '/images/delete.svg',
+						'text' => 'Delete Account'
+					];
+					include '../app/views/components/negativeBtn.php';;
+					?>
 				</div>
 			</div>
 			<div class="bg-[#D5D5D5] border-t"></div>
@@ -22,14 +41,21 @@
 					<img class="w-[100px] h-[100px] rounded-2xl" src="/images/test_image.png">
 				</div>
 				<div class="flex flex-col gap-6">
-					<div class="flex flex-col gap-2">
-						<p class="font-medium font-[Montserrat] text-sm">Username</p>
-						<p class="font-bold font-[Montserrat] text-xl"><?= htmlspecialchars($username)?></p>
-					</div>
-					<div class="flex flex-col gap-2">
-						<p class="font-medium font-[Montserrat] text-sm">Email</p>
-						<p class="font-bold font-[Montserrat] text-xl"><?= htmlspecialchars($email)?></p>
-					</div>
+					<?php
+					$props = [
+						'label' => 'Username',
+						'text' => $username,
+						'input' => false
+					];
+					include '../app/views/components/inputField.php';
+
+					$props = [
+						'label' => 'Email',
+						'text' => $email,
+						'input' => false
+					];
+					include '../app/views/components/inputField.php';
+					?>
 				</div>
 			</div>
 		</div>
@@ -51,23 +77,49 @@
 							</div>
 						</label>
 						<input type="file" id="avatar" accept="image/*" class="hidden">
-						<div class="flex flex-col gap-2">
-							<label class="font-medium font-[Montserrat] text-[#3E3E3E] text-sm">Username</label>
-							<input type="text" id="username" name="username" class="block flex font-normal font-[Montserrat] text-sm rounded-lg border border-[#A6A6A6] py-3.5 px-[1.125rem] gap-2.5 h-11">
-							<p class="text-[#AA1616] font-medium font-[Montserrat] text-sm hidden" id="usernameError"></p>
-						</div>
-						<div class="flex flex-col gap-2">
-							<label class="font-medium font-[Montserrat] text-[#3E3E3E] text-sm">Email</label>
-							<input type="text" id="email" name="email" class="block flex font-normal font-[Montserrat] text-sm rounded-lg border border-[#A6A6A6] py-3.5 px-[1.125rem] gap-2.5 h-11">
-							<p class="text-[#AA1616] font-medium font-[Montserrat] text-sm hidden" id="emailError"></p>
-						</div>
+						<?php
+						$props = [
+							'label' => 'Username',
+							'type' => 'text',
+							'id' => 'username',
+							'name' => 'username',
+							'errorId' => 'usernameError',
+							'input' => true
+						];
+						include '../app/views/components/inputField.php';
+
+						$props = [
+							'label' => 'Email',
+							'type' => 'text',
+							'id' => 'email',
+							'name' => 'email',
+							'errorId' => 'emailError',
+							'input' => true
+						];
+						include '../app/views/components/inputField.php';
+						?>
 					</form>
 				</div>
 				<div class="bg-[#D5D5D5] border-t"></div>
 				<div class="flex py-3 px-5 justify-end">
 					<div class="flex flex-row gap-2">
-						<button disabled type="submit" form="editProfileForm" id="send_edit_btn" class="flex font-medium font-[Montserrat] text-sm justify-center items-center rounded-md h-8 py-2 px-2.5 gap-2 bg-[#444444] hover:bg-[#444444] text-white"><img class="w-4 h-4" src="/images/save.svg">Save Profile</button>
-						<button id="cancel_edit_profile" class="flex font-medium font-[Montserrat] text-sm justify-center items-center rounded-md h-8 py-2 px-2.5 gap-2 hover:bg-[#E9E9E9] text-black">Cancel</button>
+						<?php
+						$props = [
+							'id' => 'send_edit_btn',
+							'type' => 'submit',
+							'icon' => '/images/save.svg',
+							'text' => 'Save Profile',
+							'form' => 'editProfileForm',
+							'disabled' => true
+						];
+						include '../app/views/components/primaryBtn.php';
+
+						$props = [
+							'id' => 'cancel_edit_profile',
+							'text' => 'Cancel',
+						];
+						include '../app/views/components/secondaryBtn.php';
+						?>
 					</div>
 				</div>
 			</div>

@@ -5,10 +5,14 @@
 		</a>
 		<div class="flex flex-row items-center justify-center gap-2.5">
 			<div class="flex gap-2.5 pr-2.5">
-				<a href="/post" class="cursor-pointer flex flex-row justify-center items-center h-8 md:py-2 md:px-2.5 rounded-md bg-black hover:bg-[#444444] text-white font-medium font-[Montserrat] text-sm gap-2.5">
-					<img class="w-4 h-4" src="/images/new_post.svg">
-					<span class="hidden md:inline">New Post</span>
-				</a>
+				<?php
+				$props = [
+					'text' => 'New Post',
+					'icon' => '/images/new_post.svg',
+					'href' => '/post',
+				];
+				include '../app/views/components/primaryBtn.php';
+				?>
 				<a href="/profile">
 					<img class="w-8 h-8 bg-[#D9D9D9] hover:bg-[#E9E9E9] rounded-md" src="/images/user_circle.svg">
 				</a>

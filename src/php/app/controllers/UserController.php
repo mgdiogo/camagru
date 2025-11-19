@@ -159,7 +159,7 @@ class UserController extends Controller
 				'field' => 'username'
 			]);
 			return;
-	}
+		}
 
 		if ($data['username'] !== null) {
 			if (strlen($data['username']) < 4 || strlen($data['username']) > 25) {
@@ -181,6 +181,7 @@ class UserController extends Controller
 				]);
 				return;
 			}
+			$this->userModel->updateUsername($data['username'], $user->id);
 		}
 
 		if ($data['email'] !== null) {
@@ -193,15 +194,15 @@ class UserController extends Controller
 				]);
 				return;
 			}
-			$changeToken = $this->userModel->generateUpdateEmailToken($existingUser->id);
+			$updateToken = $this->userModel->generateUpdateEmailToken($user->id);
+			$this->userModel->setTempEmail($data['email'], $user->id);
 			if ($data['username'] !== null) {
-				sendChangeEmail($data['username'], $data['email'], $changeToken);
+				sendChangeEmail($data['username'], $data['email'], $updateToken);
 				return;
 			}
-			sendChangeEmail($existingUser->username, $data['email'], $changeToken);
+			sendChangeEmail($user->username, $data['email'], $updateToken);
 		}
 
-		$this->userModel->updateUsername($data['username'], $user->id);
 		echo json_encode([
 			'success' => true,
 			'message'=> 'Info updated successfully',

@@ -49,7 +49,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		clearField(editFormFields.email.input, editFormFields.email.error);
 	});
 
-	errorBorder = 'border-#FFEAEA'
+	errorBorder = 'border-[#AA1616]';
+	border = 'border-[#A6A6A6]';
 
 	function checkEmptyFields(field) {
 		const filled = Object.values(editFormFields).some(field => field.input.value.trim() !== '');
@@ -66,12 +67,14 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	}
 
 	function showError(field, msg) {
+		field.input.classList.remove(border);
 		field.input.classList.add(errorBorder);
 		field.error.textContent = msg;
 		field.error.classList.remove('hidden');
 	}
 
 	function hideError(field) {
+		field.input.classList.add(border);
 		field.input.classList.remove(errorBorder);
 		field.error.classList.add('hidden');
 	}

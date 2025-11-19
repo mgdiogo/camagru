@@ -16,7 +16,7 @@ class VerificationModel extends Model {
 
 		$verificationToken = bin2hex(random_bytes(32));
 
-		$this->db->query('INSERT INTO user_tokens (user_id, token, type, expires_at, created_at) VALUES (:user_id, :token, :type, :expires_at)');
+		$this->db->query('INSERT INTO user_tokens (user_id, token, type, expires_at) VALUES (:user_id, :token, :type, :expires_at)');
 		$this->db->bind('user_id', $id);
 		$this->db->bind('token', $verificationToken);
 		$this->db->bind('type', 'email_verification');
@@ -45,15 +45,12 @@ class VerificationModel extends Model {
 	}
 
 	public function setVerified($id) {
-		$this->db->query('
-			UPDATE
-			users u
-			JOIN user_tokens t ON t.user_id = u.id AND t.type = :type
-			SET u.verified = 1,
-				t.token = NULL
-			WHERE u.id = :id
-		');
+		$this->db->query('DELETE FROM user_tokens WHERE user_id = :user_id AND type = :type');
+		$this->db->bind('user_id', $id);
 		$this->db->bind('type', 'email_verification');
+		$this->db->execute();
+
+		$this->db->query('UPDATE users SET verified = 1 WHERE id = :id');
 		$this->db->bind('id', $id);
 		$this->db->execute();
 	}

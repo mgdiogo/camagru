@@ -19,5 +19,7 @@ CREATE TABLE user_tokens (
     type ENUM('email_verification', 'email_update', 'password_update') NOT NULL,
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	temp_email varchar(255) DEFAULT NULL,
+	temp_password varchar(255) DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

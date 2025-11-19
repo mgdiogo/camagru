@@ -6,7 +6,7 @@ class ProfileController extends Controller {
 	private $userModel;
 
 	public function __construct() {
-		$this->userModel = new UserModel();
+		$this->userModel = new UserModel;
 	}
 
 	public function profile() {
@@ -18,5 +18,20 @@ class ProfileController extends Controller {
 		}
 
 		$this->render('/pages/profile', ['title' => 'Camagru', 'username' => $user->username, 'email' => $user->email]);
+	}
+
+	public function update() {
+		$token = $_GET['token'];
+
+		$user = $this->userModel->getEmailUpdateToken($token);
+
+		if (!$token || !$user) {
+			$this->render('/pages/update', ['title' => 'Camagru', 'image' => '/images/404.png', 'result_title' => 'Invalid or expired link', 'message' => 'Invalid information update request.']);
+			return;
+		}
+		$tempMail = $this->userModel->getTempMail($token);
+		if ($tempMail)
+			$this->userModel->updateEmail(['user_id' => $tempMail->user_id, 'email' => $tempMail->temp_email]);
+		$this->render('/pages/update', ['title' => 'Camagru', 'image' => '/images/success.jpg', 'result_title' => 'Information changed successfully', 'message' => 'Your email address has been changed successfully.']);
 	}
 }

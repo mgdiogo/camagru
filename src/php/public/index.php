@@ -48,6 +48,10 @@ $routes = [
 		'controller' => 'UserController',
 		'method' => 'editProfile'
 	 ],
+	 '/changeInfo' => [
+		'controller' => 'ProfileController',
+		'method' => 'update'
+	 ],
 	'/verify' => [
 		'controller' => 'VerificationController',
 		'method' => 'verify'

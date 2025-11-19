@@ -40,19 +40,22 @@ class AuthController extends Controller {
 		$user = $this->userModel->getUserByEmailOrUsername($data['username'], $data['username']);
 
 		if ($user) {
-			$verifiedUser = $this->verificationModel->getVerified($user->id);
 			if (password_verify($data['password'], $user->password)) {
-				if (!$verifiedUser->verified && (time() - strtotime($verifiedUser->verification_sent) < 60 * 5)) {
-					http_response_code(403);
-					echo json_encode([
-					'success' => false,
-					'verified' => false,
-					'message' => 'Email is not verified, check your inbox'
-					]);
-					return;
-				} else if (!$verifiedUser->verified && (time() - strtotime($verifiedUser->verification_sent) > 60 * 5)) {
-					$verificationToken = $this->verificationModel->generateVerificationToken($user->id);
-					sendVerification($user->username, $user->email , $verificationToken);
+				if (!$user->verified) {
+					$tokenData = $this->verificationModel->getLatestEmailVerificationToken($user->id);
+					if ($tokenData) {
+						if (strtotime($tokenData->expires_at) > time()) {
+							http_response_code(403);
+							echo json_encode([
+							'success' => false,
+							'verified' => false,
+							'message' => 'Email is not verified, check your inbox'
+							]);
+							return;
+						}
+					}
+					$newToken = $this->verificationModel->generateEmailVerificationToken($user->id);
+					sendEmailVerification($user->username, $user->email , $newToken);
 					http_response_code(403);
 					echo json_encode([
 					'success' => false,

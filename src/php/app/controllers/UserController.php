@@ -110,8 +110,8 @@ class UserController extends Controller
 		$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
 		if ($id = $this->userModel->register($data)) {
-			$verificationToken = $this->verificationModel->generateVerificationToken($id); 
-			sendVerification($data['username'], $data['email'], $verificationToken);
+			$verificationToken = $this->verificationModel->generateEmailVerificationToken($id); 
+			sendEmailVerification($data['username'], $data['email'], $verificationToken);
 			http_response_code(201);
 			echo json_encode([
 				'success' => true,
@@ -193,9 +193,15 @@ class UserController extends Controller
 				]);
 				return;
 			}
+			$changeToken = $this->userModel->generateUpdateEmailToken($existingUser->id);
+			if ($data['username'] !== null) {
+				sendChangeEmail($data['username'], $data['email'], $changeToken);
+				return;
+			}
+			sendChangeEmail($existingUser->username, $data['email'], $changeToken);
 		}
 
-		$this->userModel->updateUserInfo($data, $user->id);
+		$this->userModel->updateUsername($data['username'], $user->id);
 		echo json_encode([
 			'success' => true,
 			'message'=> 'Info updated successfully',

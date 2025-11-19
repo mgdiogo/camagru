@@ -32,9 +32,20 @@ class UserModel extends Model {
 			return false;
 	}
 
-	public function getUserByToken($token) {
-		$this->db->query('SELECT id, verified, verification_token FROM users WHERE verification_token = :verification_token');
-		$this->db->bind('verification_token', $token);
+	public function getEmailVerificationToken($token) {
+		$this->db->query("
+			SELECT 
+				users.id,
+				users.verified,
+				user_tokens.token,
+				user_tokens.expires_at
+				FROM user_tokens
+				JOIN users on user_tokens.user_id = users.id
+				WHERE user_tokens.token = :token
+					AND user_tokens.type = 'email_verification'
+					AND user_tokens.expires_at > NOW()
+		");
+		$this->db->bind('token', $token);
 
 		$row = $this->db->fetch();
 
@@ -62,20 +73,47 @@ class UserModel extends Model {
 		}
 	}
 
-	public function updateUserInfo(array $data, $id) {
+	public function updateUsername($username, $id) {
 		try {
-			$this->db->query('UPDATE users SET 
-				username = COALESCE(:username, username),
-				email = COALESCE(:email, email)
-			WHERE id = :id');
+			$this->db->query('UPDATE users SET username = :username, WHERE id = :id');
 			
-			$this->db->bind('username', $data['username']);
-			$this->db->bind('email', $data['email']);
+			$this->db->bind('username', $username);
 			$this->db->bind('id', $id);
 			$this->db->execute();
 		} catch (PDOException $e) {
 			error_log("Error updating user: " . $e->getMessage());
 			return false;
 		}
+	}
+
+	public function updateEmail($email, $id) {
+		try {
+			$this->db->query('UPDATE users SET email = :email, WHERE id = :id');
+			
+			$this->db->bind('email', $email);
+			$this->db->bind('id', $id);
+			$this->db->execute();
+		} catch (PDOException $e) {
+			error_log("Error updating user: " . $e->getMessage());
+			return false;
+		}
+	}
+
+	public function generateUpdateEmailToken($id) {
+		$this->db->query("DELETE FROM user_tokens WHERE user_id = :id AND type = :type");
+		$this->db->bind('id', $id);
+		$this->db->bind('type', 'email_update');
+		$this->db->execute();
+
+		$updateToken = bin2hex(random_bytes(32));
+
+		$this->db->query('INSERT INTO user_tokens (user_id, token, type, expires_at, created_at) VALUES (:user_id, :token, :type, :expires_at)');
+		$this->db->bind('user_id', $id);
+		$this->db->bind('token', $updateToken);
+		$this->db->bind('type', 'email_update');
+		$this->db->bind('expires_at', date('Y-m-d H:i:s', strtotime('+5 minutes')));
+		$this->db->execute();
+
+		return $updateToken;
 	}
 }

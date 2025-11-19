@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../app/core/config.php';
+require_once __DIR__ . '/../app/core/Config.php';
 
 // Autoloading for performance
 

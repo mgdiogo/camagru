@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../core/Controller.php';
-require_once __DIR__ . '/../core/mail.php';
+require_once __DIR__ . '/../core/Mail.php';
 
 class UserController extends Controller
 {

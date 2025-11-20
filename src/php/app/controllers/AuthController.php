@@ -6,11 +6,11 @@ require_once __DIR__ . '/../core/Mail.php';
 class AuthController extends Controller {
 
 	private $userModel;
-	private $verificationModel;
+	private $tokenModel;
 
 	public function __construct() {
 		$this->userModel = new UserModel;
-		$this->verificationModel = new VerificationModel;
+		$this->tokenModel = new TokenModel;
 	}
 	public function login() {
 		header('Content-Type: application/json');
@@ -47,7 +47,7 @@ class AuthController extends Controller {
 		if ($user) {
 			if (password_verify($data['password'], $user->password)) {
 				if (!$user->verified) {
-					$tokenData = $this->verificationModel->getLatestEmailVerificationToken($user->id);
+					$tokenData = $this->tokenModel->getLatestEmailVerificationToken($user->id);
 					if ($tokenData) {
 						if (strtotime($tokenData->expires_at) > time()) {
 							http_response_code(403);
@@ -59,7 +59,7 @@ class AuthController extends Controller {
 							return;
 						}
 					}
-					$newToken = $this->verificationModel->generateEmailVerificationToken($user->id);
+					$newToken = $this->tokenModel->generateEmailVerificationToken($user->id);
 					sendEmailVerification($user->username, $user->email , $newToken);
 					http_response_code(403);
 					echo json_encode([

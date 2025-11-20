@@ -7,11 +7,11 @@ class UserController extends Controller
 {
 
 	private $userModel;
-	private $verificationModel;
+	private $tokenModel;
 
 	public function __construct() {
 		$this->userModel = new UserModel;
-		$this->verificationModel = new VerificationModel;
+		$this->tokenModel = new TokenModel;
 	}
 
 	public function register(): void {
@@ -113,7 +113,7 @@ class UserController extends Controller
 		$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
 		if ($id = $this->userModel->register($data)) {
-			$verificationToken = $this->verificationModel->generateEmailVerificationToken($id); 
+			$verificationToken = $this->tokenModel->generateEmailVerificationToken($id); 
 			sendEmailVerification($data['username'], $data['email'], $verificationToken);
 			http_response_code(201);
 			echo json_encode([
@@ -204,8 +204,8 @@ class UserController extends Controller
 				]);
 				return;
 			}
-			$updateToken = $this->userModel->generateUpdateEmailToken($user->id);
-			$this->userModel->setTempEmail($data['email'], $user->id);
+			$updateToken = $this->tokenModel->generateUpdateEmailToken($user->id);
+			$this->tokenModel->setTempEmail($data['email'], $user->id);
 			if ($data['username'] !== null) {
 				sendChangeEmail($data['username'], $data['email'], $updateToken);
 				return;

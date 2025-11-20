@@ -2,12 +2,15 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	const editBtn = document.getElementById('edit_btn');
 	const sendEditBtn = document.getElementById('send_edit_btn');
 	const editModal = document.getElementById('edit_profile');
-	const cancelEditProfile = document.getElementById('cancel_edit_profile')
-	const changePasswordBtn = document.getElementById('password_btn');
-	const deleteAccountBtn = document.getElementById('delete_btn');
+	const cancelEditProfile = document.getElementById('cancel_edit_profile');
+
+	sendEditBtn.classList.add('bg-[#444444]');
+	sendEditBtn.classList.remove('bg-black');
 
 	function clearField(field, error) {
 		field.value = '';
+		field.classList.remove(errorBorder);
+		field.classList.add(border);
 		error.classList.add('hidden');
 	}
 
@@ -58,12 +61,12 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		if (!filled) {
 			sendEditBtn.disabled = true;
 			sendEditBtn.classList.add('bg-[#444444]');
-			sendEditBtn.classList.remove('bg-black')
+			sendEditBtn.classList.remove('bg-black');
 			return;
 		}
 		sendEditBtn.disabled = false;
 		sendEditBtn.classList.add('bg-black');
-		sendEditBtn.classList.remove('bg-[#444444]')
+		sendEditBtn.classList.remove('bg-[#444444]');
 	}
 
 	function showError(field, msg) {
@@ -94,8 +97,6 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	}
 
 	Object.values(editFormFields).forEach(field => {
-		field.input.addEventListener('focus', () => checkEmptyFields(field));
-		field.input.addEventListener('blur', () => checkEmptyFields(field));
 		field.input.addEventListener('input', () => checkEmptyFields(field));
 	});
 

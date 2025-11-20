@@ -2,17 +2,19 @@
 
 /*
  * Props:
- * - label (string|null)     : Input field label
- * - text (string|null)     : Input field placeholder text
- * - type (string)      : Input field type (e.g text, password)
+ * - label (string|null)    : Input field label
+ * - text (string|null)     : Input field text
+ * - placeholder			: Input field placeholder
+ * - type (string)      	: Input field type (e.g text, password)
  * - id (string|null)    	: Element id
- * - name (string|null)      : Element name
- * - errorId (string|null)   : Error element id
- * - classes (string)   : CSS classes
+ * - name (string|null)     : Element name
+ * - errorId (string|null)  : Error element id
+ * - classes (string)   	: CSS classes
 */
 
 $label = $props['label'] ?? '';
 $text = $props['text'] ?? '';
+$placeholder = $props['placeholder'] ?? '';
 $type = $props['type'] ?? 'text';
 $id = $props['id'] ?? '';
 $name = $props['name'] ?? '';

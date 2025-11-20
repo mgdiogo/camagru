@@ -69,14 +69,14 @@
 					<form method="POST" class="flex flex-col gap-6 w-full max-w-2xl" id="editProfileForm">
 						<label for="avatar" class="cursor-pointer w-fit">
 							<div class="flex flex-row items-center gap-2">
-								<img class="w-[120px] h-[120px] rounded-2xl" src="/images/test_image.png">
+								<img id="user_avatar" class="w-[120px] h-[120px] rounded-2xl" src="/images/test_image.png">
 								<div class="flex flex-row items-center rounded-2xl py-2 p-2.5 gap-2">
 									<img class="w-4 h-4" src="/images/upload_avatar.svg">
 									<p class="font-medium font-[Montserrat] text-sm">Upload picture</p>
 								</div>
 							</div>
 						</label>
-						<input type="file" id="avatar" accept="image/*" class="hidden">
+						<input type="file" id="avatar" name="avatar" accept="image/jpg, image/png, image/jpeg" class="hidden">
 						<?php
 						$props = [
 							'label' => 'Username',
@@ -125,5 +125,6 @@
 			</div>
 		</div> 
 	</main>
-	<script src="/js/profile.js"></script>
+	<script src="/js/editProfile.js"></script>
+	<script src="/js/avatarUpdate.js"></script>
 </body>

@@ -171,4 +171,8 @@ class UserModel extends Model {
 			error_log("Error setting temp mail: " . $e->getMessage());
 		}
 	}
+
+	public function setAvatar($avatar) {
+		
+	}
 }

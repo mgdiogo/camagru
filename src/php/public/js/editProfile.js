@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	const sendEditBtn = document.getElementById('send_edit_btn');
 	const editModal = document.getElementById('edit_profile');
 	const cancelEditProfile = document.getElementById('cancel_edit_profile');
+	const avatar = document.getElementById('user_avatar');
+	const originalAvatar = avatar.src;
 
 	sendEditBtn.classList.add('bg-[#444444]');
 	sendEditBtn.classList.remove('bg-black');
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 			editModal.classList.add('hidden');
 			clearField(editFormFields.username.input, editFormFields.username.error);
 			clearField(editFormFields.email.input, editFormFields.email.error);
+			avatar.src = originalAvatar;
 		}
 	});
 
@@ -50,6 +53,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		editModal.classList.add('hidden');
 		clearField(editFormFields.username.input, editFormFields.username.error);
 		clearField(editFormFields.email.input, editFormFields.email.error);
+		avatar.src = originalAvatar;
 	});
 
 	errorBorder = 'border-[#AA1616]';

@@ -149,6 +149,29 @@ class UserController extends Controller
     		'email' => isset($_POST['email']) && $_POST['email'] !== '' ? trim($_POST['email']) : null
 		];
 
+		if (!empty($_FILES['avatar']['name'])) {
+			$avatar = $this->validateAvatar($_FILES['avatar']);
+			if (!$avatar['success']) {
+				http_response_code(400);
+				echo json_encode([
+					'success' => false,
+					'message' => $avatar['message'],
+					'field' => 'avatar'
+				]);
+				return;	
+			}
+			$extension = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
+			$avatar_name = bin2hex(random_bytes(16));
+			$final = "{$avatar_name}.{$extension}";
+
+			$uploadAvatar = move_uploaded_file($_FILES['avatar']['tmp_name'], PUB_ROOT_DIR . "/uploads/avatars/{$final}");
+			if (!$uploadAvatar) {
+				error_log("Error uploading avatar");
+				return;
+			}
+			$this->userModel->setAvatar($_FILES['avatar']);
+		}
+
 		$existingUser = $this->userModel->getUserByEmailOrUsername($data['email'], $data['username']);
 
 		if ($existingUser) {
@@ -208,5 +231,25 @@ class UserController extends Controller
 			'message'=> 'Info updated successfully',
 			'redirect'=> '/profile'
 		]);
+	}
+
+	public function validateAvatar($avatar) {
+		if (empty($avatar['name'] || $avatar['error'] !== UPLOAD_ERR_OK))
+			return ['message' => 'Please select a file', 'success' => false];
+
+		$file_info = new finfo(FILEINFO_MIME_TYPE);
+		$mime_type = $file_info->file($avatar['tmp_name']);
+
+		$allowed_types = ['image/jpeg', 'image/pjpeg', 'image/png'];
+
+		if (!in_array($mime_type, $allowed_types))
+			return ['message' => 'File not supported', 'success' => false];
+
+		$max_size = 2 * 1024 * 1024;
+
+		if ($avatar['size'] > $max_size)
+			return ['message' => 'Image must not be larger than 2MB', 'success' => false];
+
+		return ['success' => true];
 	}
 }

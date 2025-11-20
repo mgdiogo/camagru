@@ -8,6 +8,10 @@ RUN touch /var/log/msmtp.log \
 	&& chown www-data:www-data /var/log/msmtp.log \
 	&& chmod 664 /var/log/msmtp.log
 
+RUN mkdir -p /var/www/html/public/uploads \
+    && chmod -R 775 /var/www/html/public/uploads \
+    && chown -R www-data:www-data /var/www/html/public/uploads
+
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 COPY ./docker/php/mail.ini /usr/local/etc/php/conf.d/

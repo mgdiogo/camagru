@@ -152,7 +152,7 @@ class UserController extends Controller
 		if (!empty($_FILES['avatar']['name'])) {
 			$avatar = $this->validateAvatar($_FILES['avatar']);
 			if (!$avatar['success']) {
-				http_response_code(400);
+				http_response_code($avatar['status_code']);
 				echo json_encode([
 					'success' => false,
 					'message' => $avatar['message'],
@@ -169,7 +169,10 @@ class UserController extends Controller
 				error_log("Error uploading avatar");
 				return;
 			}
-			$this->userModel->setAvatar($_FILES['avatar']);
+			$oldAvatarPath = PUB_ROOT_DIR . "/uploads/avatars/{$user->avatar}";
+			if ($user->avatar !== 'default.png' && file_exists($oldAvatarPath))
+				unlink( $oldAvatarPath );
+			$this->userModel->setAvatar($final);
 		}
 
 		$existingUser = $this->userModel->getUserByEmailOrUsername($data['email'], $data['username']);
@@ -234,22 +237,26 @@ class UserController extends Controller
 	}
 
 	public function validateAvatar($avatar) {
-		if (empty($avatar['name'] || $avatar['error'] !== UPLOAD_ERR_OK))
-			return ['message' => 'Please select a file', 'success' => false];
+		if (empty($avatar['name']) || $avatar['error'] !== UPLOAD_ERR_OK)
+			return ['message' => 'Please select a file', 'success' => false, 'status_code' => '400'];
 
 		$file_info = new finfo(FILEINFO_MIME_TYPE);
 		$mime_type = $file_info->file($avatar['tmp_name']);
 
-		$allowed_types = ['image/jpeg', 'image/pjpeg', 'image/png'];
+		$allowed_types = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/x-png', 'image/webp'];
 
 		if (!in_array($mime_type, $allowed_types))
-			return ['message' => 'File not supported', 'success' => false];
+			return ['message' => 'File extension not supported', 'success' => false, 'status_code' => '422'];
 
 		$max_size = 2 * 1024 * 1024;
 
 		if ($avatar['size'] > $max_size)
-			return ['message' => 'Image must not be larger than 2MB', 'success' => false];
+			return ['message' => 'Image must not be larger than 2MB', 'success' => false ,'status_code' => '413'];
 
 		return ['success' => true];
+	}
+
+	public function getAvatar($id) {
+		return $this->userModel->getAvatar($id);
 	}
 }

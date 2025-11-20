@@ -17,7 +17,7 @@ class ProfileController extends Controller {
 			return;
 		}
 
-		$this->render('/pages/profile', ['title' => 'Camagru', 'username' => $user->username, 'email' => $user->email]);
+		$this->render('/pages/profile', ['title' => 'Camagru', 'username' => $user->username, 'email' => $user->email, 'avatar' => $user->avatar]);
 	}
 
 	public function update() {

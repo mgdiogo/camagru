@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	const editModal = document.getElementById('edit_profile');
 	const cancelEditProfile = document.getElementById('cancel_edit_profile');
 	const avatar = document.getElementById('user_avatar');
+	const avatarUpload = document.getElementById('avatar');
 	const originalAvatar = avatar.src;
+	const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
 
 	sendEditBtn.classList.add('bg-[#444444]');
 	sendEditBtn.classList.remove('bg-black');
@@ -56,8 +58,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		avatar.src = originalAvatar;
 	});
 
-	errorBorder = 'border-[#AA1616]';
-	border = 'border-[#A6A6A6]';
+	const errorBorder = 'border-[#AA1616]';
+	const border = 'border-[#A6A6A6]';
 
 	function checkEmptyFields(field) {
 		const filled = Object.values(editFormFields).some(field => field.input.value.trim() !== '');
@@ -80,6 +82,11 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		field.error.classList.remove('hidden');
 	}
 
+	function showErrorAvatar(field, msg) {
+		field.textContent = msg;
+		field.classList.remove('hidden');
+	}
+
 	function hideError(field) {
 		field.input.classList.add(border);
 		field.input.classList.remove(errorBorder);
@@ -99,6 +106,32 @@ document.addEventListener('DOMContentLoaded', (e) => {
 			}
 		}
 	}
+
+	avatarUpload.addEventListener('change', (e) => {
+		const file = e.target.files[0];
+
+		if (!file) {
+			showErrorAvatar(avatarError, 'Please select a file');
+			return false;
+		}
+
+		if (!allowedExtensions.exec(file.name)) {
+			showErrorAvatar(avatarError, 'File extension not supported');
+			avatarUpload.value = '';
+			return false;
+		}
+
+		const imgUrl = URL.createObjectURL(file);
+		avatar.src = imgUrl;
+
+		avatar.onload = () => {
+            URL.revokeObjectURL(imgUrl);
+        };
+
+		sendEditBtn.disabled = false;
+		sendEditBtn.classList.add('bg-black');
+		sendEditBtn.classList.remove('bg-[#444444]');
+	})
 
 	Object.values(editFormFields).forEach(field => {
 		field.input.addEventListener('input', () => checkEmptyFields(field));
@@ -129,15 +162,30 @@ document.addEventListener('DOMContentLoaded', (e) => {
 				credentials: 'include'
 			});
 
-			const result = await response.json();
+			const contentType = response.headers.get('content-type') || '';
 
-			if (result.success && result.redirect) {
-				setTimeout(() => {
-					window.location.href = result.redirect;
-				})
+			let result;
+
+			if (contentType.includes('application/json'))
+				result = await response.json();
+
+			if (result) {
+				if (result.success && result.redirect) {
+					setTimeout(() => {
+						window.location.href = result.redirect;
+					})
+				} else {
+					emailError.classList.remove('hidden');
+					emailError.textContent = result.message;
+				}
+			} else if (response.status === 413) {
+				avatarError.classList.remove('hidden');
+				avatarError.textContent = 'Image must not be larger than 2MB';
+				return;
 			} else {
-				emailError.classList.remove('hidden');
-				emailError.textContent = result.message;
+				setTimeout(() => {
+					window.location.href = '/profile';
+				})
 			}
 		} catch (err) {
 			console.error('Error updating user info: ', err);

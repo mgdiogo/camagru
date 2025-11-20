@@ -94,6 +94,15 @@ class UserModel extends Model {
 			return false;
 	}
 
+	public function getAvatar($id) {
+		$this->db->query('SELECT avatar FROM users WHERE id = :id');
+		$this->db->bind('id', $id);
+		$this->db->execute();
+
+		$row = $this->db->fetch();
+		return $row ? $row->avatar : false;
+	}
+
 	public function register(array $data) {
 		try {
 			$this->db->query('INSERT INTO users (username, email, verified, password, created_at) VALUES (:username, :email, :verified, :password, :created_at)');
@@ -173,6 +182,12 @@ class UserModel extends Model {
 	}
 
 	public function setAvatar($avatar) {
-		
+		try {
+			$this->db->query('UPDATE users SET avatar = :avatar');
+			$this->db->bind('avatar', $avatar);
+			$this->db->execute();
+		} catch (PDOException $e) {
+			error_log("Error setting avatar: " . $e->getMessage());
+		}
 	}
 }

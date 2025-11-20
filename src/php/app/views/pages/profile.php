@@ -38,7 +38,7 @@
 			<div class="bg-[#D5D5D5] border-t"></div>
 			<div class="flex flex-row w-full gap-2.5 p-8">
 				<div class="flex pl-4 pr-[2.5rem]">
-					<img class="w-[100px] h-[100px] rounded-2xl" src="/uploads/avatars/<?= htmlspecialchars($avatar) ?>">
+					<img class="w-[100px] h-[100px] rounded-2xl border-2" src="/uploads/avatars/<?= htmlspecialchars($avatar) ?>">
 				</div>
 				<div class="flex flex-col gap-6">
 					<?php
@@ -68,7 +68,7 @@
 				<div class="flex flex-row p-8 gap-2">
 					<form method="POST" enctype="multipart/form-data" class="flex flex-col gap-6 w-full max-w-2xl" id="editProfileForm">
 						<div class="flex flex-row items-center gap-2">
-							<img id="user_avatar" class="w-[120px] h-[120px] rounded-2xl" src="/uploads/avatars/<?= htmlspecialchars($avatar) ?>">
+							<img id="user_avatar" class="w-[120px] h-[120px] rounded-2xl border-2" src="/uploads/avatars/<?= htmlspecialchars($avatar) ?>">
 							<label for="avatar" class="cursor-pointer w-fit">
 								<div class="flex flex-row items-center rounded-2xl py-2 p-2.5 gap-2">
 									<img class="w-4 h-4" src="/images/upload_avatar.svg">
@@ -126,5 +126,5 @@
 			</div>
 		</div> 
 	</main>
-	<script src="/js/editProfile.js"></script>
+	<script type="module" src="/js/editProfile.js"></script>
 </body>

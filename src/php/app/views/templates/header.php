@@ -19,7 +19,7 @@
 				include '../app/views/components/primaryBtn.php';
 				?>
 				<a href="/profile">
-					<img class="w-8 h-8 bg-[#D9D9D9] rounded-md hover:opacity-80" src="/uploads/avatars/<?=htmlspecialchars($userAvatar) ?>">
+					<img class="w-8 h-8 rounded-md border-2 hover:opacity-80" src="/uploads/avatars/<?=htmlspecialchars($userAvatar) ?>">
 				</a>
 			</div>
 			<div class="flex h-6 border-l-2 bg-[#E3E3E3]"></div>

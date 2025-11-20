@@ -25,7 +25,7 @@ $disabledAttr = $disabled ? 'disabled' : '';
 $formAttr = $form ? 'form="'.$form.'"' : '';
 ?>
 <?php if ($href): ?>
-    <a href="<?= htmlspecialchars($href) ?>" id="<?= htmlspecialchars($id) ?>" class="flex flex-row justify-center items-center h-8 md:py-2 md:px-2.5 rounded-md bg-black hover:bg-[#444444] text-white font-medium font-[Montserrat] text-sm gap-2.5 <?= htmlspecialchars($classes) ?>">
+    <a href="<?= htmlspecialchars($href) ?>" id="<?= htmlspecialchars($id) ?>" class="flex flex-row justify-center items-center h-8 md:py-2 md:px-2.5 rounded-md bg-[#E85105] hover:opacity-80 text-white font-medium font-[Montserrat] text-sm gap-2.5 <?= htmlspecialchars($classes) ?>">
         <?php if ($icon): ?>
             <img class="w-4 h-4" src="<?= htmlspecialchars($icon) ?>">
         <?php endif; ?>
@@ -36,7 +36,7 @@ $formAttr = $form ? 'form="'.$form.'"' : '';
         type="<?= htmlspecialchars($type) ?>" 
         id="<?= htmlspecialchars($id) ?>" 
         <?= $disabledAttr ?> <?= $formAttr ?> 
-        class="flex flex-row justify-center items-center h-8 md:py-2 md:px-2.5 rounded-md bg-black hover:bg-[#444444] text-white font-medium font-[Montserrat] text-sm gap-2.5 <?= htmlspecialchars($classes) ?>"
+        class="flex flex-row justify-center items-center h-8 md:py-2 md:px-2.5 rounded-md bg-[#E85105] hover:opacity-80 text-white font-medium font-[Montserrat] text-sm gap-2.5 <?= htmlspecialchars($classes) ?>"
     >
         <?php if ($icon): ?>
             <img class="w-4 h-4" src="<?= htmlspecialchars($icon) ?>">

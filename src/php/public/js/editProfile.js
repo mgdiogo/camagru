@@ -1,3 +1,5 @@
+import { setPrimaryButtonState } from './buttonHelper.js'
+
 document.addEventListener('DOMContentLoaded', (e) => {
 	const editBtn = document.getElementById('edit_btn');
 	const sendEditBtn = document.getElementById('send_edit_btn');
@@ -8,8 +10,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	const originalAvatar = avatar.src;
 	const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
 
-	sendEditBtn.classList.add('bg-[#444444]');
-	sendEditBtn.classList.remove('bg-black');
+	setPrimaryButtonState(sendEditBtn, 'disabled');
 
 	function clearField(field, error) {
 		field.value = '';
@@ -65,14 +66,10 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		const filled = Object.values(editFormFields).some(field => field.input.value.trim() !== '');
 
 		if (!filled) {
-			sendEditBtn.disabled = true;
-			sendEditBtn.classList.add('bg-[#444444]');
-			sendEditBtn.classList.remove('bg-black');
+			setPrimaryButtonState(sendEditBtn, 'disabled');
 			return;
 		}
-		sendEditBtn.disabled = false;
-		sendEditBtn.classList.add('bg-black');
-		sendEditBtn.classList.remove('bg-[#444444]');
+		setPrimaryButtonState(sendEditBtn, 'primary');
 	}
 
 	function showError(field, msg) {
@@ -128,9 +125,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
             URL.revokeObjectURL(imgUrl);
         };
 
-		sendEditBtn.disabled = false;
-		sendEditBtn.classList.add('bg-black');
-		sendEditBtn.classList.remove('bg-[#444444]');
+		setPrimaryButtonState(sendEditBtn, 'primary');
 	})
 
 	Object.values(editFormFields).forEach(field => {

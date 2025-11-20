@@ -181,10 +181,11 @@ class UserModel extends Model {
 		}
 	}
 
-	public function setAvatar($avatar) {
+	public function setAvatar($avatar, $id) {
 		try {
-			$this->db->query('UPDATE users SET avatar = :avatar');
+			$this->db->query('UPDATE users SET avatar = :avatar WHERE id = :id');
 			$this->db->bind('avatar', $avatar);
+			$this->db->bind('id', $id);
 			$this->db->execute();
 		} catch (PDOException $e) {
 			error_log("Error setting avatar: " . $e->getMessage());

@@ -15,6 +15,8 @@ class UserController extends Controller
 	}
 
 	public function register(): void {
+		header('Content-Type: application/json');
+
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 			http_response_code(405);
 			echo json_encode(['error' => '405: Method not allowed']);
@@ -23,23 +25,17 @@ class UserController extends Controller
 
 		$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
-		if (strpos($contentType, 'application/json') !== false) {
+		if (strpos($contentType, 'application/json') !== false)
 			$input = json_decode(file_get_contents('php://input'), true);
-			$data = [
-				'username' => trim($input['username'] ?? ''),
-				'email' => trim($input['email'] ?? ''),
-				'password' => trim($input['password'] ?? ''),
-				'confirm_password'=> trim($input['confirm_password'] ?? ''),
-			];
-		} else {
-			$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-			$data = [
-				'username' => trim($_POST['username'] ?? ''),
-				'email' => trim($_POST['email'] ?? ''),
-				'password' => trim($_POST['password'] ?? ''),
-				'confirm_password' => trim($_POST['confirm_password'] ?? '')
-			];
-		}
+ 		else
+			$input = $_POST;
+
+		$data = [
+			'username' => trim($input['username'] ?? ''),
+			'email' => trim($input['email'] ?? ''),
+			'password' => trim($input['password'] ?? ''),
+			'confirm_password'=> trim($input['confirm_password'] ?? ''),
+		];
 
 		if (empty($data['username']) || empty($data['email']) || empty($data['password']) || empty($data['confirm_password'])) {
 			http_response_code(400);
@@ -136,6 +132,8 @@ class UserController extends Controller
 	}
 
 	public function editProfile() {
+		header('Content-Type: application/json');
+
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 			http_response_code(405);
 			echo json_encode(['error' => '405: Method not allowed']);
@@ -151,45 +149,15 @@ class UserController extends Controller
 
 		$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
-		if (strpos($contentType, 'application/json') !== false) {
+		if (strpos($contentType, 'application/json') !== false)
 			$input = json_decode(file_get_contents('php://input'), true);
-			$data = [
-				'username' => trim($input['username'] ?? ''),
-				'password' => trim($input['password'] ?? '')
-			];
-		} else {
-			$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-			$data = [
-				'username' => isset($_POST['username']) && $_POST['username'] !== '' ? trim($_POST['username']) : null,
-				'email' => isset($_POST['email']) && $_POST['email'] !== '' ? trim($_POST['email']) : null
-			];
-		}
+		else
+			$input = $_POST;
 
-		if ($_FILES['avatar']) {
-			$avatar = $this->validateAvatar($_FILES['avatar']);
-			if (!$avatar['success']) {
-				http_response_code($avatar['status_code']);
-				echo json_encode([
-					'success' => false,
-					'message' => $avatar['message'],
-					'field' => 'avatar'
-				]);
-				return;	
-			}
-			$extension = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
-			$avatar_name = bin2hex(random_bytes(16));
-			$final = "{$avatar_name}.{$extension}";
-
-			$uploadAvatar = move_uploaded_file($_FILES['avatar']['tmp_name'], PUB_ROOT_DIR . "/uploads/avatars/{$final}");
-			if (!$uploadAvatar) {
-				error_log("Error uploading avatar");
-				return;
-			}
-			$oldAvatarPath = PUB_ROOT_DIR . "/uploads/avatars/{$user->avatar}";
-			if ($user->avatar !== 'default.png' && file_exists($oldAvatarPath))
-				unlink( $oldAvatarPath );
-			$this->userModel->setAvatar($final);
-		}
+		$data = [
+			'username' => trim($input['username'] ?? ''),
+			'email' => trim($input['email'] ?? '')
+		];
 
 		$existingUser = $this->userModel->getUserByEmailOrUsername($data['email'], $data['username']);
 
@@ -203,7 +171,7 @@ class UserController extends Controller
 			return;
 		}
 
-		if ($data['username'] !== null) {
+		if (!empty($data['username'])) {
 			if (strlen($data['username']) < 4 || strlen($data['username']) > 25) {
 				http_response_code(400);
 				echo json_encode([
@@ -226,7 +194,7 @@ class UserController extends Controller
 			$this->userModel->updateUsername($data['username'], $user->id);
 		}
 
-		if ($data['email'] !== null) {
+		if (!empty($data['email'])) {
 			if (!preg_match('/^[^\s@]+@[^\s@]+\.[^\s@]+$/', $data['email'])) {
 				http_response_code(400);
 				echo json_encode([
@@ -243,6 +211,32 @@ class UserController extends Controller
 				return;
 			}
 			sendChangeEmail($user->username, $data['email'], $updateToken);
+		}
+
+		if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FILE) {
+			$avatar = $this->validateAvatar($_FILES['avatar']);
+			if (!$avatar['success']) {
+				http_response_code($avatar['status_code']);
+				echo json_encode([
+					'success' => false,
+					'message' => $avatar['message'],
+					'field' => 'avatar'
+				]);
+				return;	
+			}
+			$extension = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
+			$avatar_name = bin2hex(random_bytes(16));
+			$final = "{$avatar_name}.{$extension}";
+
+			$uploadAvatar = move_uploaded_file($_FILES['avatar']['tmp_name'], PUB_ROOT_DIR . "/uploads/avatars/{$final}");
+			if (!$uploadAvatar) {
+				error_log("Error uploading avatar");
+				return;
+			}
+			$oldAvatarPath = PUB_ROOT_DIR . "/uploads/avatars/{$user->avatar}";
+			if ($user->avatar !== 'default.png' && file_exists($oldAvatarPath))
+				unlink( $oldAvatarPath );
+			$this->userModel->setAvatar($final, $user->id);
 		}
 
 		echo json_encode([

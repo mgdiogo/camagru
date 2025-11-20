@@ -15,24 +15,31 @@ class UserController extends Controller
 	}
 
 	public function register(): void {
-		// Set content to JSON for API Responses
-		header('Content-Type: application/json');
-
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 			http_response_code(405);
 			echo json_encode(['error' => '405: Method not allowed']);
 			exit;
 		}
 
-		// Sanitize data sent from POST
-		$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
-		$data = [
-			'username' => trim($_POST['username'] ?? ''),
-			'email' => trim($_POST['email'] ?? ''),
-			'password' => trim($_POST['password'] ?? ''),
-			'confirm_password' => trim($_POST['confirm_password'] ?? '')
-		];
+		if (strpos($contentType, 'application/json') !== false) {
+			$input = json_decode(file_get_contents('php://input'), true);
+			$data = [
+				'username' => trim($input['username'] ?? ''),
+				'email' => trim($input['email'] ?? ''),
+				'password' => trim($input['password'] ?? ''),
+				'confirm_password'=> trim($input['confirm_password'] ?? ''),
+			];
+		} else {
+			$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			$data = [
+				'username' => trim($_POST['username'] ?? ''),
+				'email' => trim($_POST['email'] ?? ''),
+				'password' => trim($_POST['password'] ?? ''),
+				'confirm_password' => trim($_POST['confirm_password'] ?? '')
+			];
+		}
 
 		if (empty($data['username']) || empty($data['email']) || empty($data['password']) || empty($data['confirm_password'])) {
 			http_response_code(400);
@@ -142,14 +149,23 @@ class UserController extends Controller
 			exit;
 		}
 
-		$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
-		$data = [
-			'username' => isset($_POST['username']) && $_POST['username'] !== '' ? trim($_POST['username']) : null,
-    		'email' => isset($_POST['email']) && $_POST['email'] !== '' ? trim($_POST['email']) : null
-		];
+		if (strpos($contentType, 'application/json') !== false) {
+			$input = json_decode(file_get_contents('php://input'), true);
+			$data = [
+				'username' => trim($input['username'] ?? ''),
+				'password' => trim($input['password'] ?? '')
+			];
+		} else {
+			$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			$data = [
+				'username' => isset($_POST['username']) && $_POST['username'] !== '' ? trim($_POST['username']) : null,
+				'email' => isset($_POST['email']) && $_POST['email'] !== '' ? trim($_POST['email']) : null
+			];
+		}
 
-		if (!empty($_FILES['avatar']['name'])) {
+		if ($_FILES['avatar']) {
 			$avatar = $this->validateAvatar($_FILES['avatar']);
 			if (!$avatar['success']) {
 				http_response_code($avatar['status_code']);

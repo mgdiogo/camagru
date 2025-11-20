@@ -13,20 +13,27 @@ class AuthController extends Controller {
 		$this->verificationModel = new VerificationModel;
 	}
 	public function login() {
-		header('Content-Type: application/json');
-
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 			http_response_code(405);
 			echo json_encode(['error' => '405: Method not allowed']);
 			exit;
 		}
 
-		$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
-		$data = [
-			'username' => trim($_POST['username'] ?? ''),
-			'password' => trim($_POST['password'] ?? '')
-		];
+		if (strpos($contentType, 'application/json') !== false) {
+			$input = json_decode(file_get_contents('php://input'), true);
+			$data = [
+				'username' => trim($input['username'] ?? ''),
+				'password' => trim($input['password'] ?? '')
+			];
+		} else {
+			$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			$data = [
+				'username' => trim($_POST['username'] ?? ''),
+				'password' => trim($_POST['password'] ?? '')
+			];
+		}
 
 		if (empty($data['username']) || empty($data['password'])) {
 			http_response_code(400);

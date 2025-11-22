@@ -25,14 +25,14 @@ function validateSession() {
 		session_start();
 
 	if (!isset($_SESSION['last_activity'])) { 
-		session_regenerate_id(true);
-		$_SESSION['lreg'] = time();
-	} else {
-		$interval = 60 * 30;
-	
-		if (time() - $_SESSION['last_activity'] >= $interval) {
-			session_regenerate_id(true);
-			$_SESSION['last_activity'] = time();
-		}
+		$_SESSION['last_activity'] = time();
+		return;
 	}
+
+	$interval = 60 * 30;
+
+	if (time() - $_SESSION['last_activity'] >= $interval)
+		session_regenerate_id(true);
+
+	$_SESSION['last_activity'] = time();
 }

@@ -72,6 +72,7 @@ class AuthController extends Controller {
 				session_regenerate_id(true);
 				$_SESSION['user_id'] = $user->id;
 				http_response_code(200);
+				$_SESSION['last_activity'] = time();
 				echo json_encode([
 					'success' => true,
 					'message' => 'Login successful',

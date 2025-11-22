@@ -133,6 +133,7 @@ class UserController extends Controller
 
 	public function editProfile() {
 		header('Content-Type: application/json');
+		session_write_close(); 
 
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 			http_response_code(405);
@@ -243,6 +244,88 @@ class UserController extends Controller
 			'success' => true,
 			'message'=> 'Info updated successfully',
 			'redirect'=> '/profile'
+		]);
+	}
+
+	public function updatePassword() {
+		header('Content-Type: application/json');
+		session_write_close();
+
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			http_response_code(405);
+			echo json_encode(['error' => '405: Method not allowed']);
+			exit;
+		}
+
+		$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
+		if (strpos($contentType, 'application/json') !== false)
+			$input = json_decode(file_get_contents('php://input'), true);
+		else
+			$input = $_POST;
+
+		$data = [
+			'currentPassword' => trim($input['current_pw'] ?? ''),
+			'newPassword' => trim($input['new_pw'] ?? ''),
+			'confirmPassword' => trim($input['confirm_pw'] ?? '') 
+		];
+
+		$user = $this->userModel->getUserById($_SESSION['user_id']);
+
+		if (!$user) {
+			header('Location: /login');
+			return;
+		}
+
+		if (!password_verify($data['currentPassword'], $user->password)) {
+			echo json_encode([
+				'success' => false,
+				'message' => 'Password is incorrect',
+				'field' => 'currentPassword'
+			]);
+			return;
+		}
+
+		if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,50}$/', $data['newPassword'])) {
+			http_response_code(400);
+			echo json_encode([
+				'success' => false,
+				'message' => 'Password is not strong enough',
+				'field' => 'new_pw'
+			]);
+			return;
+		}
+
+		if (password_verify($data['newPassword'], $user->password)) {
+			http_response_code(400);
+			echo json_encode([
+				'success' => false,
+				'message' => 'New password must differ from the old password',
+				'field' => 'new_pw'
+			]);
+			return;
+		}
+
+		if ($data['confirmPassword'] !== $data['newPassword']) {
+			http_response_code(400);
+			echo json_encode([
+				'success' => false,
+				'message' => 'Password does not match',
+				'field' => 'confirm_pw'
+			]);
+			return;
+		}
+
+		$updateToken = $this->tokenModel->generateUpdatePasswordToken($user->id);
+		$tempPassword = password_hash($data['newPassword'], PASSWORD_DEFAULT);
+		$this->tokenModel->setTempPassword($tempPassword, $user->id);
+		
+		sendChangePassword($user->username, $user->email, $updateToken);
+
+		echo json_encode([
+			'success' => true,
+			'message' => 'Password updated successfully',
+			'redirect' => '/profile'
 		]);
 	}
 

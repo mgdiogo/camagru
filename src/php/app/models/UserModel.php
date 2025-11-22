@@ -67,7 +67,7 @@ class UserModel extends Model {
 			$this->db->bind('id', $id);
 			$this->db->execute();
 		} catch (PDOException $e) {
-			error_log("Error updating user: " . $e->getMessage());
+			error_log("Error updating user username: " . $e->getMessage());
 			return false;
 		}
 	}
@@ -84,7 +84,24 @@ class UserModel extends Model {
 			$this->db->bind('id', $data['user_id']);
 			$this->db->execute();
 		} catch (PDOException $e) {
-			error_log("Error updating user: " . $e->getMessage());
+			error_log("Error updating user email: " . $e->getMessage());
+			return false;
+		}
+	}
+
+	public function updatePassword(array $data) {
+		try {
+			$this->db->query("DELETE FROM user_tokens WHERE user_id = :user_id AND type = :type");
+			$this->db->bind('user_id', $data['user_id']);
+			$this->db->bind('type', 'password_update');
+			$this->db->execute();
+
+			$this->db->query('UPDATE users SET password = :password WHERE id = :id');
+			$this->db->bind('password', $data['password']);
+			$this->db->bind('id', $data['user_id']);
+			$this->db->execute();
+		} catch (PDOException $e) {
+			error_log("Error updating user password: " . $e->getMessage());
 			return false;
 		}
 	}

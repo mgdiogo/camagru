@@ -32,9 +32,8 @@ class Router
 	private function dispatch(string $controllerName, string $method): void {
 		if (class_exists($controllerName)) {
 			$controller = new $controllerName();
-			if (method_exists($controller, $method)) {
+			if (method_exists($controller, $method))
 				$controller->$method();
-			}
 		} else
 			$this->handle_404();
 	}

@@ -93,7 +93,13 @@ document.addEventListener('DOMContentLoaded', (e) => {
 				body: formData
 			})
 
-			const result = await response.json();
+			let result = {}
+			
+			try {
+				result = await response.json();
+			} catch (err) {
+				console.error('Unexpected server error [regstering]: ', err);
+			}
 			
 			if (result.success) {
 				if (result.redirect) {

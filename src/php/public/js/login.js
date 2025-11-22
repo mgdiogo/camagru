@@ -65,7 +65,13 @@ document.addEventListener('DOMContentLoaded', (e) => {
 				credentials: 'include'
 			})
 
-			const result = await response.json();
+			let result = {}
+			
+			try {
+				result = await response.json();
+			} catch (err) {
+				console.error('Unexpected server error [logging in]: ', err);
+			}
 
 			if (result.success) {
 				if (result.redirect) {

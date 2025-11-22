@@ -1,9 +1,9 @@
-import { setPrimaryButtonState } from './buttonHelper.js'
+import { setPrimaryButtonState, clearField, validateField, checkEmptyFields } from './helperFunctions.js'
 
-document.addEventListener('DOMContentLoaded', (e) => {
+ export function editProfile(document) {
 	const editBtn = document.getElementById('edit_btn');
 	const sendEditBtn = document.getElementById('send_edit_btn');
-	const editModal = document.getElementById('edit_profile');
+	const editModal = document.getElementById('edit_modal');
 	const cancelEditProfile = document.getElementById('cancel_edit_profile');
 	const avatar = document.getElementById('user_avatar');
 	const avatarUpload = document.getElementById('avatar');
@@ -11,13 +11,6 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
 
 	setPrimaryButtonState(sendEditBtn, 'disabled');
-
-	function clearField(field, error) {
-		field.value = '';
-		field.classList.remove(errorBorder);
-		field.classList.add(border);
-		error.classList.add('hidden');
-	}
 
 	const editForm = document.getElementById('editProfileForm');
 
@@ -44,10 +37,11 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	});
 
 	editModal.addEventListener('click', (e) => {
-		if (!(document.getElementById('edit_modal').contains(e.target))) {
+		if (!(document.getElementById('edit_profile').contains(e.target))) {
 			editModal.classList.add('hidden');
 			clearField(editFormFields.username.input, editFormFields.username.error);
 			clearField(editFormFields.email.input, editFormFields.email.error);
+			clearField(avatar, avatarError);
 			avatar.src = originalAvatar;
 		}
 	});
@@ -56,52 +50,13 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		editModal.classList.add('hidden');
 		clearField(editFormFields.username.input, editFormFields.username.error);
 		clearField(editFormFields.email.input, editFormFields.email.error);
+		clearField(avatar, avatarError);
 		avatar.src = originalAvatar;
 	});
-
-	const errorBorder = 'border-[#AA1616]';
-	const border = 'border-[#A6A6A6]';
-
-	function checkEmptyFields(field) {
-		const filled = Object.values(editFormFields).some(field => field.input.value.trim() !== '');
-
-		if (!filled) {
-			setPrimaryButtonState(sendEditBtn, 'disabled');
-			return;
-		}
-		setPrimaryButtonState(sendEditBtn, 'primary');
-	}
-
-	function showError(field, msg) {
-		field.input.classList.remove(border);
-		field.input.classList.add(errorBorder);
-		field.error.textContent = msg;
-		field.error.classList.remove('hidden');
-	}
 
 	function showErrorAvatar(field, msg) {
 		field.textContent = msg;
 		field.classList.remove('hidden');
-	}
-
-	function hideError(field) {
-		field.input.classList.add(border);
-		field.input.classList.remove(errorBorder);
-		field.error.classList.add('hidden');
-	}
-
-	function validateField(field) {
-		const value = field.input.value.trim();
-	
-		for (const rule of field.validators) {
-			if (!rule.check(value)) {
-				showError(field, rule.msg);
-				return false;
-			} else {
-				hideError(field);
-				return true;
-			}
-		}
 	}
 
 	avatarUpload.addEventListener('change', (e) => {
@@ -122,18 +77,14 @@ document.addEventListener('DOMContentLoaded', (e) => {
 		avatar.src = imgUrl;
 
 		avatar.onload = () => {
-            URL.revokeObjectURL(imgUrl);
-        };
+			URL.revokeObjectURL(imgUrl);
+		};
 
 		setPrimaryButtonState(sendEditBtn, 'primary');
 	})
 
 	Object.values(editFormFields).forEach(field => {
-		field.input.addEventListener('input', () => checkEmptyFields(field));
-	});
-
-	Object.values(editFormFields).forEach(field => {
-		field.input.addEventListener('submit', () => validateField(field));
+		field.input.addEventListener('input', () => checkEmptyFields(field, editFormFields, sendEditBtn, 'edit'));
 	});
 
 	editForm.addEventListener('submit', async (e) => {
@@ -161,8 +112,12 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
 			let result;
 
-			if (contentType.includes('application/json'))
-				result = await response.json();
+			try {
+				if (contentType.includes('application/json'))
+					result = await response.json();
+			} catch (err) {
+				console.error('Unexpected server error [updating profile]: ', err);
+			}
 
 			if (result) {
 				if (result.success && result.redirect) {
@@ -186,4 +141,4 @@ document.addEventListener('DOMContentLoaded', (e) => {
 			console.error('Error updating user info: ', err);
 		}
 	});
-})
+}

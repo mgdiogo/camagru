@@ -48,9 +48,17 @@ $routes = [
 		'controller' => 'UserController',
 		'method' => 'editProfile'
 	 ],
+	 '/profile/edit/password' => [
+		'controller' => 'UserController',
+		'method' => 'updatePassword'
+	 ],
 	 '/changeInfo' => [
 		'controller' => 'ProfileController',
-		'method' => 'update'
+		'method' => 'updateProfile'
+	 ],
+	 '/changePassword' => [
+		'controller' => 'ProfileController',
+		'method' => 'updatePassword'
 	 ],
 	'/verify' => [
 		'controller' => 'VerificationController',
